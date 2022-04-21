@@ -30,4 +30,4 @@ Detalles:
 
 ## **Modelo de Dominio**
 
-![MD](https://user-images.githubusercontent.com/81445495/162057610-8e448e29-8b48-4009-9334-0e4688c14e98.png)
+![MD](https://user-images.githubusercontent.com/81445495/164559088-6133e5ee-98ab-4e25-9aa0-6e6e096eb3b0.jpg)
