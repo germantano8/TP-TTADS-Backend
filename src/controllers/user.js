@@ -1,17 +1,11 @@
-const {User} = require('../models/index');
+const {User, Role} = require('../models/index');
+const {existsRole} = require('../middlewares/index');
 
 const userController = {
     getUsers: async (req, res) => {
         try{
             const users = await User.find();
             
-            if(!users){
-                return res.status(404).send({
-                    success: false,
-                    message: 'User not found'
-                });
-            }
-
             return res.status(200).send({
                 success: true,
                 users: users
@@ -61,14 +55,12 @@ const userController = {
                 role: req.body.role
             });
 
-            // here we should call a function to check whether the values of the fields are correct
-
-            let role = await Role.findById(req.body.role);
-
+            const role = await existsRole(req.body.role);
+            
             if(!role){
-                res.status(400).send({
-                    success:false,
-                    message:"Role doesn't exist",
+                return res.status(400).send({
+                    success: false,
+                    messag:"Role doesn't exist"
                 })
             }
 
@@ -89,10 +81,18 @@ const userController = {
         try{
             let userId = req.params.id;
 
-            // here we should call a function to check whether the values of the fields are correct
+            const role = await Role.findById(req.body.role);
+
+            if(!role){
+                res.status(400).send({
+                    success:false,
+                    message:"Role doesn't exist",
+                });
+            }
 
             const user = await User.findByIdAndUpdate(userId, req.body, {new: true});
             // new:true returns the updated user and not the old one
+            console.log(user);
 
             if(user){
                 res.status(200).send({
@@ -115,11 +115,11 @@ const userController = {
 
     deleteUser: async (req, res) => {
         try{
-            let userId = req.params.id;
+            const userId = req.params.id;
 
-            let response = await User.FindByIdAndRemove(userId);
-
-            if(response){
+            let userResponse = await User.findByIdAndRemove(userId);
+            
+            if(userResponse){
                 res.status(200).send({
                     success:true,
                     message:"User deleted successfully",
