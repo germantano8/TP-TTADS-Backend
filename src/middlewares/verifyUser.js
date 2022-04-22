@@ -1,5 +1,4 @@
 const validator = require('validator');
-const {Role} = require('../models/index');
 
 const verifyUser = (req,res,next) => {
     const fields = [
@@ -27,12 +26,4 @@ const verifyUser = (req,res,next) => {
 
 };
 
-const existsRole = async(rolId) => {
-    const role = await Role.findById(rolId);
-    
-    if(!role)return false;
-
-    return true;
-}
-
-module.exports = {verifyUser, existsRole};
+module.exports = {verifyUser};

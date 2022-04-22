@@ -1,5 +1,4 @@
 const {User, Role} = require('../models/index');
-const {existsRole} = require('../middlewares/index');
 
 const userController = {
     getUsers: async (req, res) => {
@@ -55,13 +54,13 @@ const userController = {
                 role: req.body.role
             });
 
-            const role = await existsRole(req.body.role);
-            
+            const role = await Role.findById(req.body.role);
+
             if(!role){
                 return res.status(400).send({
-                    success: false,
-                    messag:"Role doesn't exist"
-                })
+                    success:false,
+                    message:"Role doesn't exist",
+                });
             }
 
             await user.save();
@@ -84,7 +83,7 @@ const userController = {
             const role = await Role.findById(req.body.role);
 
             if(!role){
-                res.status(400).send({
+                return res.status(400).send({
                     success:false,
                     message:"Role doesn't exist",
                 });
@@ -95,12 +94,12 @@ const userController = {
             console.log(user);
 
             if(user){
-                res.status(200).send({
+                return res.status(200).send({
                     success:true,
                     message:"User updated successfully",
                 })
             }else{
-                res.status(400).send({
+                return res.status(400).send({
                     success:false,
                     message:"User not found",
                 })
@@ -120,12 +119,12 @@ const userController = {
             let userResponse = await User.findByIdAndRemove(userId);
             
             if(userResponse){
-                res.status(200).send({
+                return res.status(200).send({
                     success:true,
                     message:"User deleted successfully",
                 })
             }else{
-                res.status(400).send({
+                return res.status(400).send({
                     success:false,
                     message:"User not found",
                 })
