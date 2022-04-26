@@ -54,15 +54,6 @@ const userController = {
                 role: req.body.role
             });
 
-            const role = await Role.findById(req.body.role);
-
-            if(!role){
-                return res.status(400).send({
-                    success:false,
-                    message:"Role doesn't exist",
-                });
-            }
-
             await user.save();
             return res.status(200).send({
                 success: true,
@@ -91,7 +82,6 @@ const userController = {
 
             const user = await User.findByIdAndUpdate(userId, req.body, {new: true});
             // new:true returns the updated user and not the old one
-            console.log(user);
 
             if(user){
                 return res.status(200).send({

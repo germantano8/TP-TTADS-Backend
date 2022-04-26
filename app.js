@@ -17,4 +17,6 @@ app.use(cors({ credentials: true, origin: true }));
 
 app.use("/api", routes);
 
+console.clear();
+
 module.exports = app;
