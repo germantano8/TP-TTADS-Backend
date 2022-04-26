@@ -6,7 +6,9 @@ const verifyMongooseID = (req,res,next,id = undefined) =>{
     
     if (!mongoose.Types.ObjectId.isValid(id ?? req.params.id)) {
         res.status(400);
-        res.send({success:false, message: "id must be a string of 12 bytes or a string of 24 hex characters or an integer"});
+        res.send({
+            success:false, 
+            message: "Not a Mongoose ID"});
         return;
     };
 
