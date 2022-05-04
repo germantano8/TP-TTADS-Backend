@@ -1,4 +1,4 @@
-const {User, Role} = require('../models/index');
+const {User} = require('../models/index');
 
 const userController = {
     getUsers: async (req, res) => {
@@ -70,15 +70,6 @@ const userController = {
     updateUser: async (req, res) => {
         try{
             let userId = req.params.id;
-
-            const role = await Role.findById(req.body.role);
-
-            if(!role){
-                return res.status(400).send({
-                    success:false,
-                    message:"Role doesn't exist",
-                });
-            }
 
             const user = await User.findByIdAndUpdate(userId, req.body, {new: true});
             // new:true returns the updated user and not the old one

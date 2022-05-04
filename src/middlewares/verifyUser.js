@@ -5,8 +5,6 @@ const mongoose = require('mongoose');
 const verifyUser = async (req,res,next) => {
 
     try{
-        // falta imageurl y pw
-
         const errors = {
             name:null, 
             surname:null,
@@ -18,14 +16,14 @@ const verifyUser = async (req,res,next) => {
         };
 
         function verifyLength(field){
-            if(!(field && validator.isLength(field, {min: 4, max:undefined}))){
+            if(!(field && validator.isLength(field, {min: 4, max:20}))){
                 return true;
             }
         }
 
         // Name and Surname
-        verifyLength(req.body.name) ? errors.name = 'Name must be at least 4 characters' : null;
-        verifyLength(req.body.surname) ? errors.surname = 'Surname must be at least 4 characters' : null;
+        verifyLength(req.body.name) ? errors.name = 'Name must be between 4 and 20 characters' : null;
+        verifyLength(req.body.surname) ? errors.surname = 'Surname must be between 4 and 20 characters' : null;
 
         // Phone
         if(req.body.phone){
@@ -54,8 +52,8 @@ const verifyUser = async (req,res,next) => {
         }
 
         // Password
-        if(!(req.body.password && validator.isLength(req.body.password, {min: 8, max:undefined}))){
-            errors.password = 'Password must be at least 8 characters';
+        if(!(req.body.password && validator.isLength(req.body.password, {min: 8, max:32}))){
+            errors.password = 'Password must be between 4 and 32 characters';
         }
 
         // Role
@@ -76,7 +74,6 @@ const verifyUser = async (req,res,next) => {
             });
         }
 
-        
         return next();
     }catch{
         return res.status(500).send({
@@ -89,4 +86,4 @@ const verifyUser = async (req,res,next) => {
 
 };
 
-module.exports = {verifyUser};
+module.exports = verifyUser;
