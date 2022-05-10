@@ -1,4 +1,4 @@
-const {Category, Restaurant} = mongoose.model('Category');
+const {Category} = require('../models/index');
 
 const categoryController = {
     getCategories: async (req, res) => {

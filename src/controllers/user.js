@@ -51,7 +51,7 @@ const userController = {
                 username: req.body.username,
                 imageUrl: req.body.imageUrl,
                 password: req.body.password,
-                role: req.body.role
+                role: req.body.role,
             });
 
             await user.save();
