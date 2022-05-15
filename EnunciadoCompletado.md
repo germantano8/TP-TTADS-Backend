@@ -4,7 +4,6 @@ Proyecto para la materia "Técnicas y Tecnologías Avanzadas de Desarrollo de So
 Integrantes:
 - Germán Tano - Legajo 46873
 - Alejandro Navarini - Legajo 45082
-- Franco Fonzo - Legajo 46882
 - Alan Holtz - Legajo 46937
 
 ## **Enunciado General**
