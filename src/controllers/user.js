@@ -128,6 +128,10 @@ const userController = {
       res.status(404).send({ success: false, message: "User not found" });
     }
     user.mainLocation = req.body.locationId;
+    let locations = user.locations;
+    if (locations.indexOf(req.body.locationId) == -1) {
+      locations.push(req.body.locationId);
+    }
 
     const updatedUser = await User.findByIdAndUpdate(userId, user, {
       new: true,
