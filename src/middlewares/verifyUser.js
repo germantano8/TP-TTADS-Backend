@@ -53,7 +53,7 @@ const verifyUser = async (req,res,next) => {
 
         // Password
         if(!(req.body.password && validator.isLength(req.body.password, {min: 8, max:32}))){
-            errors.password = 'Password must be between 4 and 32 characters';
+            errors.password = 'Password must be between 8 and 32 characters';
         }
 
         // Role
