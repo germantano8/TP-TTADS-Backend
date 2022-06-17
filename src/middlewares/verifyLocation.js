@@ -10,6 +10,7 @@ const verifyLocation = async (req, res, next) => {
   if (mongoose.isValidObjectId(req.body.locationId)) {
     let location = await Location.findById(req.body.locationId);
     location ? null : (errors.location = "Location is not valid");
+    console.log("Valid Location");
   }
 
   if (Object.entries(errors).some((e) => e[1] != null)) {
