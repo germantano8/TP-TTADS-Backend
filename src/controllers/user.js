@@ -188,9 +188,6 @@ const userController = {
     }
 
     let locationId = user.mainLocation;
-    console.log(`User : ${JSON.stringify(user, null, 2)}`);
-
-    console.log(`Location : ${locationId}`);
     const index = user.locations.indexOf(locationId);
     if (index == -1) {
       res.status(404).send({ success: false, message: "Location not found" });
