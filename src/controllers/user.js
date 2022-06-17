@@ -150,6 +150,35 @@ const userController = {
       user: updatedUser,
     });
   },
+  addLocation: async (req, res) => {
+    const userId = req.params.id;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).send({ success: false, message: "User not found" });
+    }
+
+    if (user.locations.indexOf(req.body.locationId) == -1) {
+      user.locations.push(req.body.locationId);
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, user, {
+      new: true,
+    });
+
+    if (!updatedUser) {
+      return res.status(500).send({
+        success: false,
+        message: "Error trying to add location",
+      });
+    }
+
+    return res.status(200).send({
+      success: true,
+      message: "User updated successfully",
+      user: updatedUser,
+    });
+  },
 };
 
 module.exports = userController;
