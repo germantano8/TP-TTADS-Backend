@@ -16,6 +16,8 @@ router.delete("/:id/", verifyMongooseID, controller.deleteUser);
 router.put("/:id/", verifyMongooseID, verifyUser, controller.updateUser);
 
 router.post("/:id/mainLocation", verifyLocation, controller.addMainLocation);
+router.delete("/:id/mainLocation", controller.removeMainLocation);
 router.post("/:id/location", verifyLocation, controller.addLocation);
+router.delete("/:id/location", verifyLocation, controller.removeLocation);
 
 module.exports = router;

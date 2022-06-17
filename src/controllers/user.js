@@ -179,6 +179,74 @@ const userController = {
       user: updatedUser,
     });
   },
+  removeMainLocation: async (req, res) => {
+    const userId = req.params.id;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).send({ success: false, message: "User not found" });
+    }
+
+    let locationId = user.mainLocation;
+    console.log(`User : ${JSON.stringify(user, null, 2)}`);
+
+    console.log(`Location : ${locationId}`);
+    const index = user.locations.indexOf(locationId);
+    if (index == -1) {
+      res.status(404).send({ success: false, message: "Location not found" });
+    }
+    user.locations.splice(index, 1);
+    user.mainLocation = null;
+
+    const updatedUser = await User.findByIdAndUpdate(userId, user, {
+      new: true,
+    });
+
+    if (!updatedUser) {
+      return res.status(500).send({
+        success: false,
+        message: "Error trying to remove location",
+      });
+    }
+
+    return res.status(200).send({
+      success: true,
+      message: "User updated successfully",
+      user: updatedUser,
+    });
+  },
+  removeLocation: async (req, res) => {
+    const userId = req.params.id;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).send({ success: false, message: "User not found" });
+    }
+
+    const locationId = req.body.locationId;
+    const index = user.locations.indexOf(locationId);
+    if (index == -1) {
+      res.status(404).send({ success: false, message: "Location not found" });
+    }
+    user.locations.splice(index, 1);
+
+    const updatedUser = await User.findByIdAndUpdate(userId, user, {
+      new: true,
+    });
+
+    if (!updatedUser) {
+      return res.status(500).send({
+        success: false,
+        message: "Error trying to remove location",
+      });
+    }
+
+    return res.status(200).send({
+      success: true,
+      message: "User updated successfully",
+      user: updatedUser,
+    });
+  },
 };
 
 module.exports = userController;
