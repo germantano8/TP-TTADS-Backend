@@ -15,7 +15,7 @@ router.use("/users", user);
 router.use("/tags", tag);
 router.use("/categories", category);
 router.use("/meals", meal);
-router.use("/location", location);
-router.use("/restaurant", restaurant);
+router.use("/locations", location);
+router.use("/restaurants", restaurant);
 
 module.exports = router;
