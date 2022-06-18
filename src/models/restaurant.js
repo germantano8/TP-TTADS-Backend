@@ -7,6 +7,7 @@ var restaurantSchema = new mongoose.Schema({
   deliveryPricePerKm: { type: Number, required: true },
   deliveryPriceBase: { type: Number, required: true },
   location: { type: mongoose.SchemaTypes.ObjectId, ref: "location" },
+  tags: { type: [mongoose.SchemaTypes.ObjectId] },
 });
 
 module.exports = mongoose.model("restaurant", restaurantSchema);
