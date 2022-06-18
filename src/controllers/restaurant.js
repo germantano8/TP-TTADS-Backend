@@ -13,9 +13,9 @@ const restaurantController = {
       });
 
       await newRestaurant.save();
-      res.send({ success: true, newRestaurant });
+      return res.status(200).send({ success: true, newRestaurant });
     } catch (error) {
-      res
+      return res
         .status(500)
         .send({ success: false, message: 'Error creating restaurant' });
     }
@@ -24,9 +24,9 @@ const restaurantController = {
   getRestaurants: async (req, res) => {
     try {
       const restaurants = await Restaurant.find({}).exec();
-      res.send({ success: true, restaurants });
+      return res.status(200).send({ success: true, restaurants });
     } catch (error) {
-      res
+      return res
         .status(500)
         .send({ success: false, message: 'Error finding restaurants' });
     }
@@ -38,9 +38,9 @@ const restaurantController = {
       const restaurants = await Restaurant.find({
         tags: tagId,
       }).exec();
-      res.send({ success: true, restaurants });
+      return res.status(200).send({ success: true, restaurants });
     } catch (error) {
-      res
+      return res
         .status(500)
         .send({ success: false, message: 'Error finding restaurants' });
     }
@@ -57,9 +57,9 @@ const restaurantController = {
         });
       }
 
-      res.send({ success: true, restaurant });
+      return res.status(200).send({ success: true, restaurant });
     } catch (error) {
-      res
+      return res
         .status(500)
         .send({ success: false, message: 'Error finding restaurant' });
     }
@@ -78,9 +78,9 @@ const restaurantController = {
         });
       }
 
-      res.send({ success: true, removedRestaurant });
+      return res.status(200).send({ success: true, removedRestaurant });
     } catch (error) {
-      res
+      return res
         .status(500)
         .send({ success: false, message: 'Error deleting restaurant' });
     }
@@ -106,9 +106,9 @@ const restaurantController = {
         });
       }
 
-      res.send({ success: true, updatedRestaurant });
+      return res.status(200).send({ success: true, updatedRestaurant });
     } catch (error) {
-      res
+      return res
         .status(500)
         .send({ success: false, message: 'Error updating restaurant' });
     }
@@ -120,7 +120,7 @@ const restaurantController = {
 
       const restaurant = await Restaurant.findById(restaurantId);
       if (!restaurant) {
-        res
+        return res
           .status(404)
           .send({ success: false, message: 'Restaurant not found' });
       }
@@ -161,7 +161,7 @@ const restaurantController = {
       const restaurant = await Restaurant.findById(restaurantId);
 
       if (!restaurant) {
-        res
+        return res
           .status(404)
           .send({ success: false, message: 'Restaurant not found' });
       }
@@ -177,20 +177,20 @@ const restaurantController = {
       );
 
       if (!updatedRestaurant) {
-        res.status(500).send({
+        return res.status(500).send({
           success: false,
           message: 'Error trying to remove location from restaurant',
         });
       }
 
-      res.status(200).send({
+      return res.status(200).send({
         success: true,
         message: 'Location removed succesfully',
         restaurant: updatedRestaurant,
       });
     } catch (error) {
       console.log(error);
-      res.status(500).send({
+      return res.status(500).send({
         success: false,
         message: 'Error removing location from restaurant',
       });

@@ -170,7 +170,7 @@ const userController = {
     }
     user.mainLocation = req.body.locationId;
     const { locations } = user;
-    if (locations.indexOf(req.body.locationId) == -1) {
+    if (locations.indexOf(req.body.locationId) === -1) {
       locations.push(req.body.locationId);
     }
 
@@ -199,7 +199,7 @@ const userController = {
       res.status(404).send({ success: false, message: 'User not found' });
     }
 
-    if (user.locations.indexOf(req.body.locationId) == -1) {
+    if (user.locations.indexOf(req.body.locationId) === -1) {
       user.locations.push(req.body.locationId);
     }
 
@@ -230,7 +230,7 @@ const userController = {
 
     const locationId = user.mainLocation;
     const index = user.locations.indexOf(locationId);
-    if (index == -1) {
+    if (index === -1) {
       res.status(404).send({ success: false, message: 'Location not found' });
     }
     user.locations.splice(index, 1);
@@ -263,7 +263,7 @@ const userController = {
 
     const { locationId } = req.body;
     const index = user.locations.indexOf(locationId);
-    if (index == -1) {
+    if (index === -1) {
       res.status(404).send({ success: false, message: 'Location not found' });
     }
     user.locations.splice(index, 1);

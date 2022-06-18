@@ -1,6 +1,6 @@
 const validator = require('validator');
 const mongoose = require('mongoose');
-const { Category, Restaurant } = require('../models/index');
+const { Restaurant } = require('../models/index');
 
 const verifyCategory = async (req, res, next) => {
   try {
@@ -17,7 +17,7 @@ const verifyCategory = async (req, res, next) => {
       errors.restaurant = 'Restaurant is required';
     } else if (mongoose.isValidObjectId(req.body.restaurant)) {
       const restaurant = await Restaurant.findById(req.body.restaurant);
-      restaurant ? null : errors.restaurant = 'Restaurant is not valid';
+      errors.restaurant = restaurant ? null : 'Restaurant is not valid';
     }
 
     if (Object.entries(errors).some((e) => e[1] != null)) {

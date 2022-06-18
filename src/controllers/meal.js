@@ -4,9 +4,9 @@ const mealController = {
   getMeals: async (req, res) => {
     try {
       const meals = await Meal.find({}).exec();
-      res.status(200).send({ success: true, meals });
+      return res.status(200).send({ success: true, meals });
     } catch {
-      res.status(500).send({ success: false, message: 'Error finding meals' });
+      return res.status(500).send({ success: false, message: 'Error finding meals' });
     }
   },
 
@@ -16,9 +16,9 @@ const mealController = {
 
       if (!meal) return res.status(404).send({ success: false, message: `There is no meal with ID: ${req.params.id}` });
 
-      res.status(200).send({ success: true, meal });
+      return res.status(200).send({ success: true, meal });
     } catch {
-      res.status(500).send({ success: false, message: 'Error finding meal' });
+      return res.status(500).send({ success: false, message: 'Error finding meal' });
     }
   },
 
@@ -33,9 +33,9 @@ const mealController = {
       });
 
       await meal.save();
-      res.status(200).send({ success: true, meal });
+      return res.status(200).send({ success: true, meal });
     } catch {
-      res.status(500).send({ success: false, message: 'Error creating meal' });
+      return res.status(500).send({ success: false, message: 'Error creating meal' });
     }
   },
 
@@ -45,23 +45,27 @@ const mealController = {
 
       if (!removedMeal) return res.status(404).send({ success: false, message: `There is no meal with ID: ${req.params.id}` });
 
-      res.status(200).send({ success: true, removedMeal });
+      return res.status(200).send({ success: true, removedMeal });
     } catch {
-      res.status(500).send({ success: false, message: 'Error deleting meal' });
+      return res.status(500).send({ success: false, message: 'Error deleting meal' });
     }
   },
 
   updateMeal: async (req, res) => {
     try {
       const updatedMeal = await Meal.findByIdAndUpdate(req.params.id, {
-        name: req.body.name, description: req.body.description, price: req.body.price, category: req.body.category, tags: req.body.tags,
+        name: req.body.name,
+        description: req.body.description,
+        price: req.body.price,
+        category: req.body.category,
+        tags: req.body.tags,
       }).exec();
 
       if (!updatedMeal) return res.status(404).send({ success: false, message: `There is no meal with ID: ${req.params.id}` });
 
-      res.status(200).send({ success: true, updatedMeal });
+      return res.status(200).send({ success: true, updatedMeal });
     } catch {
-      res.status(500).send({ success: false, message: 'Error updating meal' });
+      return res.status(500).send({ success: false, message: 'Error updating meal' });
     }
   },
 };

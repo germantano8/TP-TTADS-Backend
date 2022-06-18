@@ -17,9 +17,9 @@ const locationController = {
 
       await newLocation.save();
 
-      res.send({ success: true, newLocation });
+      return res.send({ success: true, newLocation });
     } catch (error) {
-      res.status(500).send({ success: false, message: 'Error creating location' });
+      return res.status(500).send({ success: false, message: 'Error creating location' });
     }
   },
 
@@ -29,9 +29,9 @@ const locationController = {
 
       if (!location) return res.status(404).send({ success: false, message: `There is no location with ID: ${req.params.id}` });
 
-      res.send({ success: true, location });
+      return res.send({ success: true, location });
     } catch (error) {
-      res.status(500).send({ success: false, message: 'Error finding location' });
+      return res.status(500).send({ success: false, message: 'Error finding location' });
     }
   },
 
@@ -41,9 +41,9 @@ const locationController = {
 
       if (!removedLocation) return res.status(404).send({ success: false, message: `There is no location with ID: ${req.params.id}` });
 
-      res.send({ success: true, removedLocation });
+      return res.send({ success: true, removedLocation });
     } catch (error) {
-      res.status(500).send({ success: false, message: 'Error deleting location' });
+      return res.status(500).send({ success: false, message: 'Error deleting location' });
     }
   },
 
@@ -60,9 +60,9 @@ const locationController = {
 
       if (!updatedLocation) return res.status(404).send({ success: false, message: `There is no location with ID: ${req.params.id}` });
 
-      res.send({ success: true, updatedLocation });
+      return res.status(200).send({ success: true, updatedLocation });
     } catch (error) {
-      res.status(500).send({ success: false, message: 'Error updating location' });
+      return res.status(500).send({ success: false, message: 'Error updating location' });
     }
   },
 

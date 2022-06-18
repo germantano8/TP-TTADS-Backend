@@ -15,7 +15,7 @@ const auth = async (req, res, next) => {
       return res.status(403).send({ success: false, message: 'Token expired' });
     }
     req.user = decoded;
-    next();
+    return next();
   } catch (error) {
     return res.status(403).send({ success: false, message: 'Invalid token' });
   }

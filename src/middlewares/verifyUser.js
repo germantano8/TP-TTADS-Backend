@@ -1,6 +1,7 @@
 const validator = require('validator');
 const mongoose = require('mongoose');
 const { User, Role } = require('../models/index');
+const { verifyLength } = require('./verifyLength');
 
 const verifyUser = async (req, res, next) => {
   try {
@@ -14,18 +15,12 @@ const verifyUser = async (req, res, next) => {
       role: null,
     };
 
-    function verifyLength(field) {
-      if (!(field && validator.isLength(field, { min: 4, max: 20 }))) {
-        return true;
-      }
-    }
-
     // Name and Surname
-    verifyLength(req.body.name)
-      ? (errors.name = 'Name must be between 4 and 20 characters')
+    errors.name = verifyLength(req.body.name)
+      ? 'Name must be between 4 and 20 characters'
       : null;
-    verifyLength(req.body.surname)
-      ? (errors.surname = 'Surname must be between 4 and 20 characters')
+    errors.surname = verifyLength(req.body.surname)
+      ? 'Surname must be between 4 and 20 characters'
       : null;
 
     // Phone
@@ -67,7 +62,7 @@ const verifyUser = async (req, res, next) => {
       errors.role = 'There is no role';
     } else if (mongoose.isValidObjectId(req.body.role)) {
       const role = await Role.findById(req.body.role);
-      role ? null : (errors.role = 'Role is not valid');
+      errors.role = role ? null : 'Role is not valid';
     }
 
     // If there are errors, return the errors

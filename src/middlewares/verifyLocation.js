@@ -1,4 +1,3 @@
-const validator = require('validator');
 const mongoose = require('mongoose');
 const { Location } = require('../models/index');
 
@@ -9,8 +8,7 @@ const verifyLocation = async (req, res, next) => {
 
   if (mongoose.isValidObjectId(req.body.locationId)) {
     const location = await Location.findById(req.body.locationId);
-    location ? null : (errors.location = 'Location is not valid');
-    console.log('Valid Location');
+    errors.location = location ? null : 'Location is not valid';
   }
 
   if (Object.entries(errors).some((e) => e[1] != null)) {
@@ -19,7 +17,7 @@ const verifyLocation = async (req, res, next) => {
       errors,
     });
   }
-  next();
+  return next();
 };
 
 module.exports = verifyLocation;

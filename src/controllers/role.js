@@ -27,25 +27,23 @@ const roleController = {
     if (roleId == null) {
       return res.status(400).send({ success: false, message: 'Wrong request' });
     }
-
-    await Role.findById(roleId, (err, role) => {
-      if (err) {
-        return res
-          .status(500)
-          .send({ success: false, message: 'Error finding role' });
-      }
+    try {
+      const role = await Role.findById(roleId);
 
       if (!role) {
         return res
           .status(404)
           .send({ success: false, message: 'Could not find role' });
       }
-
       return res.status(200).send({
         success: true,
         role,
       });
-    });
+    } catch (error) {
+      return res
+        .status(500)
+        .send({ success: false, message: 'Error finding role' });
+    }
   },
 
   createRole: (req, res) => {

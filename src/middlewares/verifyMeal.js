@@ -1,6 +1,7 @@
 const validator = require('validator');
 const mongoose = require('mongoose');
 const { Category, Restaurant } = require('../models/index');
+const { verifyLength } = require('./verifyLength');
 
 const verifyMeal = async (req, res, next) => {
   try {
@@ -12,21 +13,15 @@ const verifyMeal = async (req, res, next) => {
       restaurant: null,
     };
 
-    function verifyLength(field) {
-      if (!(field && validator.isLength(field, { min: 4, max: 20 }))) {
-        return true;
-      }
-    }
+    errors.name = verifyLength(req.body.name) ? 'Name must be between 4 and 20 characters' : null;
+    errors.description = verifyLength(req.body.description) ? 'Description must be between 4 and 20 characters' : null;
 
-    verifyLength(req.body.name) ? errors.name = 'Name must be between 4 and 20 characters' : null;
-    verifyLength(req.body.description) ? errors.description = 'Description must be between 4 and 20 characters' : null;
-
-    validator.isNumber(req.body.price) ? null : errors.price = 'Price must be a number';
+    errors.price = validator.isNumber(req.body.price) ? null : 'Price must be a number';
 
     if (req.body.category) {
       if (mongoose.isValidObjectId(req.body.category)) {
         const category = await Category.findById(req.body.category);
-        category ? null : errors.category = 'Category is not valid';
+        errors.category = category ? null : 'Category is not valid';
       }
     }
 
@@ -34,7 +29,7 @@ const verifyMeal = async (req, res, next) => {
       errors.restaurant = 'Restaurant is required';
     } else if (mongoose.isValidObjectId(req.body.restaurant)) {
       const restaurant = await Restaurant.findById(req.body.restaurant);
-      restaurant ? null : errors.restaurant = 'Restaurant is not valid';
+      errors.restaurant = restaurant ? null : 'Restaurant is not valid';
     }
 
     if (Object.entries(errors).some((e) => e[1] != null)) {
