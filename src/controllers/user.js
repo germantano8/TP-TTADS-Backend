@@ -1,6 +1,6 @@
-const { User } = require("../models/index");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { User } = require('../models/index');
 
 const userController = {
   getUsers: async (req, res) => {
@@ -9,36 +9,35 @@ const userController = {
 
       return res.status(200).send({
         success: true,
-        users: users,
+        users,
       });
     } catch {
       return res.status(500).send({
         success: false,
-        message: "Error getting users",
+        message: 'Error getting users',
       });
     }
   },
 
   getUser: async (req, res) => {
     try {
-      let userId = req.params.id;
+      const userId = req.params.id;
       const user = await User.findById(userId);
 
       if (user) {
         return res.status(200).send({
           success: true,
-          user: user,
-        });
-      } else {
-        return res.status(400).send({
-          success: false,
-          message: "User not found",
+          user,
         });
       }
+      return res.status(400).send({
+        success: false,
+        message: 'User not found',
+      });
     } catch {
       return res.status(500).send({
         success: false,
-        message: "Error getting user",
+        message: 'Error getting user',
       });
     }
   },
@@ -47,7 +46,7 @@ const userController = {
     try {
       const { password } = req.body;
       console.log(`Password ${password}`);
-      let encryptedPassword = await bcrypt.hash(password, 10);
+      const encryptedPassword = await bcrypt.hash(password, 10);
 
       const user = new User({
         name: req.body.name,
@@ -62,13 +61,13 @@ const userController = {
       await user.save();
       return res.status(200).send({
         success: true,
-        user: user,
+        user,
       });
     } catch (error) {
       console.log(error);
       return res.status(500).send({
         success: false,
-        message: "Error creating user",
+        message: 'Error creating user',
       });
     }
   },
@@ -78,40 +77,42 @@ const userController = {
       if (!(email && password)) {
         return res.status(400).send({
           success: false,
-          message: "Email and password are required",
+          message: 'Email and password are required',
         });
       }
       console.log(`${email} - ${password}`);
-      const user = await User.findOne({ email: email });
+      const user = await User.findOne({ email });
 
-      if (!user)
+      if (!user) {
         return res
           .status(400)
-          .send({ success: false, message: "No user found" });
+          .send({ success: false, message: 'No user found' });
+      }
 
-      if (!(await bcrypt.compare(password, user.password)))
+      if (!(await bcrypt.compare(password, user.password))) {
         return res
           .status(400)
-          .send({ success: false, message: "Invalid credentials" });
-      console.log(`Everything valid`);
+          .send({ success: false, message: 'Invalid credentials' });
+      }
+      console.log('Everything valid');
 
-      const key = process.env.TOKEN_KEY || "";
-      const token = jwt.sign({ user_id: user._id, email: email }, key, {
-        expiresIn: "2h",
+      const key = process.env.TOKEN_KEY || '';
+      const token = jwt.sign({ user_id: user._id, email }, key, {
+        expiresIn: '2h',
       });
 
-      return res.status(200).send({ success: true, user: user, token: token });
+      return res.status(200).send({ success: true, user, token });
     } catch (error) {
       console.log(error);
       return res
         .status(500)
-        .send({ success: false, message: "Error while logging in" });
+        .send({ success: false, message: 'Error while logging in' });
     }
   },
 
   updateUser: async (req, res) => {
     try {
-      let userId = req.params.id;
+      const userId = req.params.id;
 
       const user = await User.findByIdAndUpdate(userId, req.body, {
         new: true,
@@ -121,18 +122,17 @@ const userController = {
       if (user) {
         return res.status(200).send({
           success: true,
-          message: "User updated successfully",
-        });
-      } else {
-        return res.status(400).send({
-          success: false,
-          message: "User not found",
+          message: 'User updated successfully',
         });
       }
+      return res.status(400).send({
+        success: false,
+        message: 'User not found',
+      });
     } catch {
       return res.status(500).send({
         success: false,
-        message: "Error updating user",
+        message: 'Error updating user',
       });
     }
   },
@@ -141,23 +141,22 @@ const userController = {
     try {
       const userId = req.params.id;
 
-      let userResponse = await User.findByIdAndRemove(userId);
+      const userResponse = await User.findByIdAndRemove(userId);
 
       if (userResponse) {
         return res.status(200).send({
           success: true,
-          message: "User deleted successfully",
-        });
-      } else {
-        return res.status(400).send({
-          success: false,
-          message: "User not found",
+          message: 'User deleted successfully',
         });
       }
+      return res.status(400).send({
+        success: false,
+        message: 'User not found',
+      });
     } catch {
       return res.status(500).send({
         success: false,
-        message: "Error deleting user",
+        message: 'Error deleting user',
       });
     }
   },
@@ -167,10 +166,10 @@ const userController = {
 
     const user = await User.findById(userId);
     if (!user) {
-      res.status(404).send({ success: false, message: "User not found" });
+      res.status(404).send({ success: false, message: 'User not found' });
     }
     user.mainLocation = req.body.locationId;
-    let locations = user.locations;
+    const { locations } = user;
     if (locations.indexOf(req.body.locationId) == -1) {
       locations.push(req.body.locationId);
     }
@@ -182,13 +181,13 @@ const userController = {
     if (!updatedUser) {
       return res.status(500).send({
         success: false,
-        message: "Error trying to add location",
+        message: 'Error trying to add location',
       });
     }
 
     return res.status(200).send({
       success: true,
-      message: "User updated successfully",
+      message: 'User updated successfully',
       user: updatedUser,
     });
   },
@@ -197,7 +196,7 @@ const userController = {
 
     const user = await User.findById(userId);
     if (!user) {
-      res.status(404).send({ success: false, message: "User not found" });
+      res.status(404).send({ success: false, message: 'User not found' });
     }
 
     if (user.locations.indexOf(req.body.locationId) == -1) {
@@ -211,13 +210,13 @@ const userController = {
     if (!updatedUser) {
       return res.status(500).send({
         success: false,
-        message: "Error trying to add location",
+        message: 'Error trying to add location',
       });
     }
 
     return res.status(200).send({
       success: true,
-      message: "User updated successfully",
+      message: 'User updated successfully',
       user: updatedUser,
     });
   },
@@ -226,13 +225,13 @@ const userController = {
 
     const user = await User.findById(userId);
     if (!user) {
-      res.status(404).send({ success: false, message: "User not found" });
+      res.status(404).send({ success: false, message: 'User not found' });
     }
 
-    let locationId = user.mainLocation;
+    const locationId = user.mainLocation;
     const index = user.locations.indexOf(locationId);
     if (index == -1) {
-      res.status(404).send({ success: false, message: "Location not found" });
+      res.status(404).send({ success: false, message: 'Location not found' });
     }
     user.locations.splice(index, 1);
     user.mainLocation = null;
@@ -244,13 +243,13 @@ const userController = {
     if (!updatedUser) {
       return res.status(500).send({
         success: false,
-        message: "Error trying to remove location",
+        message: 'Error trying to remove location',
       });
     }
 
     return res.status(200).send({
       success: true,
-      message: "User updated successfully",
+      message: 'User updated successfully',
       user: updatedUser,
     });
   },
@@ -259,13 +258,13 @@ const userController = {
 
     const user = await User.findById(userId);
     if (!user) {
-      res.status(404).send({ success: false, message: "User not found" });
+      res.status(404).send({ success: false, message: 'User not found' });
     }
 
-    const locationId = req.body.locationId;
+    const { locationId } = req.body;
     const index = user.locations.indexOf(locationId);
     if (index == -1) {
-      res.status(404).send({ success: false, message: "Location not found" });
+      res.status(404).send({ success: false, message: 'Location not found' });
     }
     user.locations.splice(index, 1);
 
@@ -276,13 +275,13 @@ const userController = {
     if (!updatedUser) {
       return res.status(500).send({
         success: false,
-        message: "Error trying to remove location",
+        message: 'Error trying to remove location',
       });
     }
 
     return res.status(200).send({
       success: true,
-      message: "User updated successfully",
+      message: 'User updated successfully',
       user: updatedUser,
     });
   },

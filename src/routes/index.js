@@ -1,21 +1,20 @@
-"use strict";
-let express = require("express");
-let role = require("./role");
-let user = require("./user");
-let tag = require("./tag");
-let category = require("./category");
-let meal = require("./meal");
-let location = require("./location");
-let restaurant = require("./restaurant");
+const express = require('express');
+const role = require('./role');
+const user = require('./user');
+const tag = require('./tag');
+const category = require('./category');
+const meal = require('./meal');
+const location = require('./location');
+const restaurant = require('./restaurant');
 
-let router = express.Router();
+const router = express.Router();
 
-router.use("/roles", role);
-router.use("/users", user);
-router.use("/tags", tag);
-router.use("/categories", category);
-router.use("/meals", meal);
-router.use("/locations", location);
-router.use("/restaurants", restaurant);
+router.use('/roles', role);
+router.use('/users', user);
+router.use('/tags', tag);
+router.use('/categories', category);
+router.use('/meals', meal);
+router.use('/locations', location);
+router.use('/restaurants', restaurant);
 
 module.exports = router;
