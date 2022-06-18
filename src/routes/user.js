@@ -12,6 +12,7 @@ let router = express.Router();
 router.get("", controller.getUsers);
 router.get("/:id/", verifyMongooseID, controller.getUser);
 router.post("/", verifyUser, controller.createUser);
+router.post("/login", controller.login);
 router.delete("/:id/", verifyMongooseID, controller.deleteUser);
 router.put("/:id/", verifyMongooseID, verifyUser, controller.updateUser);
 
