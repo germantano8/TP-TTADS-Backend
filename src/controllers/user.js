@@ -1,4 +1,6 @@
 const { User } = require("../models/index");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const userController = {
   getUsers: async (req, res) => {
@@ -43,14 +45,17 @@ const userController = {
 
   createUser: async (req, res) => {
     try {
+      const { password } = req.body;
+      console.log(`Password ${password}`);
+      let encryptedPassword = await bcrypt.hash(password, 10);
+
       const user = new User({
         name: req.body.name,
         surname: req.body.surname,
         phone: req.body.phone,
         email: req.body.email,
-        username: req.body.username,
         imageUrl: req.body.imageUrl,
-        password: req.body.password,
+        password: encryptedPassword,
         role: req.body.role,
       });
 
@@ -59,11 +64,48 @@ const userController = {
         success: true,
         user: user,
       });
-    } catch {
+    } catch (error) {
+      console.log(error);
       return res.status(500).send({
         success: false,
         message: "Error creating user",
       });
+    }
+  },
+  login: async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      if (!(email && password)) {
+        return res.status(400).send({
+          success: false,
+          message: "Email and password are required",
+        });
+      }
+      console.log(`${email} - ${password}`);
+      const user = await User.findOne({ email: email });
+
+      if (!user)
+        return res
+          .status(400)
+          .send({ success: false, message: "No user found" });
+
+      if (!(await bcrypt.compare(password, user.password)))
+        return res
+          .status(400)
+          .send({ success: false, message: "Invalid credentials" });
+      console.log(`Everything valid`);
+
+      const key = process.env.TOKEN_KEY || "";
+      const token = jwt.sign({ user_id: user._id, email: email }, key, {
+        expiresIn: "2h",
+      });
+
+      return res.status(200).send({ success: true, user: user, token: token });
+    } catch (error) {
+      console.log(error);
+      return res
+        .status(500)
+        .send({ success: false, message: "Error while logging in" });
     }
   },
 
