@@ -5,6 +5,7 @@ const verifyCategory = require("./verifyCategory");
 const verifyMeal = require("./verifyMeal");
 const verifyLocation = require("./verifyLocation");
 const verifyRestaurantTags = require("./verifyRestaurantTags");
+const auth = require("./auth");
 
 module.exports = {
   verifyMongooseID,
@@ -14,4 +15,5 @@ module.exports = {
   verifyMeal,
   verifyLocation,
   verifyRestaurantTags,
+  auth,
 };
