@@ -9,6 +9,7 @@ const restaurantController = {
         image: req.body.image,
         deliveryPricePerKm: req.body.deliveryPricePerKm,
         deliveryPriceBase: req.body.deliveryPriceBase,
+        tags: req.body.tags,
       });
 
       await newRestaurant.save();
@@ -23,6 +24,20 @@ const restaurantController = {
   getRestaurants: async (req, res) => {
     try {
       const restaurants = await Restaurant.find({}).exec();
+      res.send({ success: true, restaurants });
+    } catch (error) {
+      res
+        .status(500)
+        .send({ success: false, message: "Error finding restaurants" });
+    }
+  },
+
+  getRestaurantsByTag: async (req, res) => {
+    try {
+      const tagId = req.params.id;
+      const restaurants = await Restaurant.find({
+        tags: tagId,
+      }).exec();
       res.send({ success: true, restaurants });
     } catch (error) {
       res
