@@ -1,8 +1,8 @@
 // imports
-const mongoose = require("mongoose");
-const app = require("./app");
+const mongoose = require('mongoose');
+const app = require('./app');
 // load dotenv
-require("dotenv").config();
+require('dotenv').config();
 
 const PORT = 3700;
 
@@ -10,8 +10,7 @@ const PORT = 3700;
 
 // connect to database and launch app in case it succeeds
 mongoose.connect(process.env.CONN_STRING).then(() => {
-  
-  console.log("Connected to database succesfully...");
+  console.log('Connected to database succesfully...');
 
   // Creacion del servidor
   app.listen(PORT, () => {

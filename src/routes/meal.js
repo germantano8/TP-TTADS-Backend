@@ -1,8 +1,8 @@
-let express = require('express');
-let controller = require('../controllers/meal');
+const express = require('express');
+const controller = require('../controllers/meal');
 const { verifyMongooseID, verifyMeal } = require('../middlewares');
 
-let router = express.Router();
+const router = express.Router();
 
 router.get('/', controller.getMeals);
 router.get('/:id/', verifyMongooseID, controller.getMeal);

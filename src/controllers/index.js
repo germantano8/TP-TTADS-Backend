@@ -1,19 +1,17 @@
-"use strict";
-
-let roleController = require('./role');
-let userController = require('./user');
-let tagController = require('./tag');
-let categoryControler = require('./category');
-let mealController = require('./meal');
-let locationController = require('./location');
-let restaurantController = require('./restaurant');
+const roleController = require('./role');
+const userController = require('./user');
+const tagController = require('./tag');
+const categoryControler = require('./category');
+const mealController = require('./meal');
+const locationController = require('./location');
+const restaurantController = require('./restaurant');
 
 module.exports = {
-    roleController,
-    userController,
-    tagController,
-    categoryControler,
-    mealController,
-    locationController,
-    restaurantController,
-}
+  roleController,
+  userController,
+  tagController,
+  categoryControler,
+  mealController,
+  locationController,
+  restaurantController,
+};

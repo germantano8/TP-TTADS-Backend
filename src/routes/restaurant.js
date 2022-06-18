@@ -1,21 +1,21 @@
-let express = require("express");
-let controller = require("../controllers/restaurant");
+const express = require('express');
+const controller = require('../controllers/restaurant');
 const {
   verifyMongooseID,
   verifyLocation,
   verifyRestaurantTags,
-} = require("../middlewares");
+} = require('../middlewares');
 
-let router = express.Router();
+const router = express.Router();
 
-router.get("/:id", verifyMongooseID, controller.getRestaurant);
-router.post("/", verifyRestaurantTags, controller.createRestaurant);
-router.delete("/:id", verifyMongooseID, controller.deleteRestaurant);
-router.put("/:id", verifyMongooseID, controller.updateRestaurant);
+router.get('/:id', verifyMongooseID, controller.getRestaurant);
+router.post('/', verifyRestaurantTags, controller.createRestaurant);
+router.delete('/:id', verifyMongooseID, controller.deleteRestaurant);
+router.put('/:id', verifyMongooseID, controller.updateRestaurant);
 
-router.get("/byTag/:id", controller.getRestaurantsByTag);
+router.get('/byTag/:id', controller.getRestaurantsByTag);
 
-router.put("/:id/location", verifyLocation, controller.addLocation);
-router.delete("/:id/location", controller.removeLocation);
+router.put('/:id/location', verifyLocation, controller.addLocation);
+router.delete('/:id/location', controller.removeLocation);
 
 module.exports = router;
