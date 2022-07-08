@@ -2,7 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 
-const routes = require('./src/routes/index');
+const routes = require('./routes/index');
 
 // start app as express
 const app = express();
@@ -16,6 +16,4 @@ app.use(cors({ credentials: true, origin: true }));
 
 app.use('/api', routes);
 
-console.clear();
-
-module.exports = app;
+export {app}
