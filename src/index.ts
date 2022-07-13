@@ -1,19 +1,12 @@
-// imports
-const mongoose = require('mongoose');
-const {app} = require('./app');
-// load dotenv
-require('dotenv').config();
+import { App } from "./app";
+import middlewares from "./middlewares/middlewares";
+import routes = require("./routes/index");
+
+require("dotenv").config();
 
 const PORT = 3700;
 
-// console.clear();
+const app = new App(PORT, middlewares, [routes]);
 
-// connect to database and launch app in case it succeeds
-mongoose.connect(process.env.CONN_STRING).then(() => {
-  console.log('Connected to database succesfully...');
-
-  // Creacion del servidor
-  app.listen(PORT, () => {
-    console.log(`Server running at: localhost:${PORT}`);
-  });
-}).catch((err: Error) => console.log(err));
+app.mongoDB(process.env.CONN_STRING);
+app.listen();
