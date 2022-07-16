@@ -1,22 +1,39 @@
-const express = require('express');
-const role = require('./role');
-const user = require('./user');
-const tag = require('./tag');
-const category = require('./category');
-const meal = require('./meal');
-const location = require('./location');
-const restaurant = require('./restaurant');
-const order = require('./order');
+const express = require("express");
+const path = require("path");
+
+const role = require("./role");
+const user = require("./user");
+const tag = require("./tag");
+const category = require("./category");
+const meal = require("./meal");
+const location = require("./location");
+const restaurant = require("./restaurant");
+const uploads = require("../middlewares/disk.ts");
 
 const router = express.Router();
 
-router.use('/roles', role);
-router.use('/users', user);
-router.use('/tags', tag);
-router.use('/categories', category);
-router.use('/meals', meal);
-router.use('/locations', location);
-router.use('/restaurants', restaurant);
-router.use('/orders', order);
+router.post("/upload", uploads.single("img"), (req, res, next) => {
+  const { file } = req;
+  if (!file) {
+    const error = new Error("Please upload a file");
+    error.httpStatusCode = 400;
+    return next(error);
+  }
+  return res.send(file);
+});
+
+router.get("/image/:file", (req, res, next) => {
+  const fileName = req.params.file;
+  const filePath = path.resolve(`tmp/uploads/${fileName}`);
+  res.sendFile(filePath, (err) => next(err));
+});
+
+router.use("/roles", role);
+router.use("/users", user);
+router.use("/tags", tag);
+router.use("/categories", category);
+router.use("/meals", meal);
+router.use("/locations", location);
+router.use("/restaurants", restaurant);
 
 module.exports = router;

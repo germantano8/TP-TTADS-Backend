@@ -8,8 +8,10 @@
   "parserOptions": {
     "ecmaVersion": "latest"
   },
+  "plugins": [
+    "@typescript-eslint"
+  ],
   "rules": {
-    "no-console": "off",
     "no-underscore-dangle": "off"
   }
 }

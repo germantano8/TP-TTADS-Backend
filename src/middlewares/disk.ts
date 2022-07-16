@@ -1,5 +1,5 @@
-import * as multer from "multer";
-import { mkdir } from "fs";
+import multer = require("multer");
+import { mkdirSync } from "fs";
 import { Request } from "express";
 
 const storage = multer.diskStorage({
@@ -8,18 +8,18 @@ const storage = multer.diskStorage({
     _file: Express.Multer.File,
     callback: (error: Error | null, destination: string) => void
   ): void => {
-    const dir = process.cwd() + "/tmp/uploads";
-    mkdir(dir, (err: NodeJS.ErrnoException) => {
-      callback(err, dir);
-    });
+    const path = "./tmp/uploads";
+    mkdirSync(path, { recursive: true });
+    callback(null, path);
   },
   filename: function (
     _req: Request,
     file: Express.Multer.File,
     callback: (error: Error, filename: string) => void
   ) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    callback(null, file.fieldname + "-" + uniqueSuffix);
+    const suffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+    const ext = file.mimetype.split("/")[1];
+    callback(null, `${file.fieldname}-${suffix}.${ext}`);
   },
 });
 
@@ -28,13 +28,20 @@ const fileFilter = (
   file: Express.Multer.File,
   callback: multer.FileFilterCallback
 ): void => {
-  if (file.mimetype === "image/png" || file.mimetype === "image/jpg") {
+  if (["image/png", "image/jpg", "image/jpeg"].includes(file.mimetype)) {
     callback(null, true);
   } else {
-    callback(null, false);
+    const err = new Error("File mimetype not supported");
+    callback(err);
   }
 };
 
-const upload = multer({ storage: storage, fileFilter: fileFilter });
+const uploads = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 1024 * 1024,
+  },
+});
 
-export default upload;
+module.exports = uploads;
