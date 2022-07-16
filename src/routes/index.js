@@ -9,14 +9,14 @@ const meal = require("./meal");
 const location = require("./location");
 const restaurant = require("./restaurant");
 const uploads = require("../middlewares/disk.ts");
+const { ApiError } = require("../errors/api-error");
 
 const router = express.Router();
 
 router.post("/upload", uploads.single("img"), (req, res, next) => {
   const { file } = req;
   if (!file) {
-    const error = new Error("Please upload a file");
-    error.httpStatusCode = 400;
+    const error = new ApiError(400, "Please upload a file");
     return next(error);
   }
   return res.send(file);

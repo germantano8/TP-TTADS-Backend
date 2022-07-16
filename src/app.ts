@@ -1,6 +1,7 @@
 import { Application } from "express";
 import express = require("express");
 import mongoose = require("mongoose");
+import handleError from "./middlewares/errors.middleware";
 
 export class App {
   public app: Application;
@@ -19,6 +20,9 @@ export class App {
     this.middleware(middleware);
     this.routes(routes);
     this.assets("public");
+
+    //Custom error handler middleware as the last middleware
+    this.app.use(handleError);
   }
 
   /**
