@@ -1,102 +1,82 @@
-const { Role } = require('../models/index');
+import { default as ApiError } from "../errors/api-error";
+import { Role } from "../models/index";
 
-const roleController = {
-  getRoles: async (req, res) => {
-    await Role.find({}).exec((err, roles) => {
+module.exports = {
+  getRoles: async (_req, res, next) => {
+    Role.find({}).exec((err, roles) => {
       if (err) {
-        return res
-          .status(500)
-          .send({ message: 'Error finding roles' });
+        return next(new ApiError(500, err.message));
       }
 
-      if (!roles) {
-        return res
-          .status(404)
-          .send({ message: 'There are no roles' });
-      }
-
-      return res.status(200).send(roles);
+      return res.send(roles);
     });
   },
 
-  getRole: async (req, res) => {
+  getRole: async (req, res, next) => {
     const roleId = req.params.id;
     if (roleId == null) {
-      return res.status(400).send({ message: 'Wrong request' });
+      return next(new ApiError(400, "Bad request"));
     }
-    try {
-      const role = await Role.findById(roleId);
 
-      if (!role) {
-        return res
-          .status(404)
-          .send({ message: 'Could not find role' });
+    Role.findById(roleId).exec((err, role) => {
+      if (err) {
+        return next(new ApiError(500, err.message));
       }
-      return res.status(200).send(role);
-    } catch (error) {
-      return res
-        .status(500)
-        .send({ message: 'Error finding role' });
-    }
+
+      if (!role)
+        return next(new ApiError(404, `Role id = ${roleId} not found`));
+
+      return res.send(role);
+    });
   },
 
-  createRole: (req, res) => {
-    const role = new Role();
+  createRole: (req, res, next) => {
+    const newRole = req.body;
 
-    role.description = req.body.description;
+    const role = new Role({
+      description: newRole.description,
+    });
 
     Role.create(role, (err, insertedRole) => {
       if (err) {
-        return res
-          .status(500)
-          .send({ message: 'Error creating role' });
+        return next(new ApiError(500, err.message));
       }
 
-      if (!insertedRole) {
-        return res
-          .status(500)
-          .send({ message: 'Error creating role' });
-      }
-
-      return res.status(201).send({message:"Role created successfully"});
+      return res.send({ role: insertedRole });
     });
   },
 
-  updateRole: async (req, res) => {
+  updateRole: async (req, res, next) => {
     const roleId = req.params.id;
 
-    const newRole = {
-      description: req.body.description,
-    };
+    const newRole = req.body;
 
-    await Role.findOneAndUpdate(roleId, newRole, (err, roleUpdated) => {
+    const role = new Role({
+      description: newRole.description,
+    });
+
+    await Role.findOneAndUpdate(roleId, role, (err, roleUpdated) => {
       if (err) {
-        return res
-          .status(500)
-          .send({ message: `Error updating role${err.message}` });
+        return next(new ApiError(500, err.message));
       }
 
-      if (!roleUpdated) {
-        return res
-          .status(500)
-          .send({ message: 'Error updating role' });
-      }
-
-      return res.status(200).send({message:"Role updated successfully"});
+      return res.send({ role: roleUpdated });
     });
   },
 
-  deleteRole: async (req, res) => {
+  deleteRole: async (req, res, next) => {
     const roleId = req.params.id;
 
-    await Role.findByIdAndRemove(roleId, (err, roleRemoved) => {
-      if (err) return res.status(500).send({ message: 'Could not delete role' });
+    await Role.findByIdAndRemove(roleId, (err, found) => {
+      if (err) {
+        return next(new ApiError(500, err.message));
+      }
 
-      if (!roleRemoved) return res.status(404).send({ message: 'Did not find role' });
+      if (!found) {
+        next(new ApiError(404, `Role id = ${roleId} not found`));
+      }
 
-      return res.status(200).send({message:"Role deleted successfully"});
+      return res.status(200);
     });
   },
 };
-
-module.exports = roleController;
