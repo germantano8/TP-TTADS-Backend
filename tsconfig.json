@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+      "experimentalDecorators": true,
       "outDir": "./built",
       "allowJs": true,
       "target": "es5"
