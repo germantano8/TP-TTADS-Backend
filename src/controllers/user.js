@@ -22,7 +22,9 @@ const userController = {
   getUser: async (req, res) => {
     try {
       const userId = req.params.id;
-      const user = await User.findById(userId);
+      const { detailed } = req.query;
+
+      const user = detailed ? await User.findById(userId).populate({ path: 'locations', model: 'location' }).populate({ path: 'role' }).populate({ path: 'mainLocation' }) : await User.findById(userId);
 
       if (user) {
         return res.status(200).send({
@@ -71,7 +73,7 @@ const userController = {
       });
     }
   },
-  
+
   login: async (req, res) => {
     try {
       const { email, password } = req.body;

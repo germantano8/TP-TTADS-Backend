@@ -43,10 +43,8 @@ const verifyOrder = async (req, res, next) => {
     // Total
     if (!req.body.total) {
       errors.total = 'Total is required';
-    } else {
-      if (!validator.isNumeric(req.body.total)) {
-        errors.total = 'Total is not valid';
-      }
+    } else if (!validator.isNumeric(req.body.total)) {
+      errors.total = 'Total is not valid';
     }
 
     if (Object.entries(errors).some((e) => e[1] != null)) {
@@ -65,6 +63,6 @@ const verifyOrder = async (req, res, next) => {
       },
     });
   }
-}
+};
 
 module.exports = verifyOrder;
