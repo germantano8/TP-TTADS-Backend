@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models/index');
+const { Restaurant, Meal } = require('../models/index');
 
 const restaurantController = {
   createRestaurant: async (req, res) => {
@@ -48,15 +48,22 @@ const restaurantController = {
 
   getRestaurant: async (req, res) => {
     try {
-      const restaurant = await Restaurant.findById(req.params.id).exec();
-
+      const { detailed } = req.query;
+      let restaurant = null;
+      if (!detailed) {
+        restaurant = await Restaurant.findById(req.params.id).exec();
+      } else {
+        const restaurantModel = await Restaurant.findById(req.params.id).populate({ path: 'location' }).exec();
+        const meals = await Meal.find({ restaurant: req.params.id }).exec();
+        restaurant = restaurantModel.toObject();
+        restaurant.meals = meals;
+      }
       if (!restaurant) {
         return res.status(404).send({
           success: false,
           message: `There is no restaurant with ID: ${req.params.id}`,
         });
       }
-
       return res.status(200).send({ success: true, restaurant });
     } catch (error) {
       return res

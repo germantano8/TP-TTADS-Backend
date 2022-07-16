@@ -16,7 +16,7 @@ const verifyMeal = async (req, res, next) => {
     errors.name = verifyLength(req.body.name) ? 'Name must be between 4 and 20 characters' : null;
     errors.description = verifyLength(req.body.description) ? 'Description must be between 4 and 20 characters' : null;
 
-    errors.price = validator.isNumber(req.body.price) ? null : 'Price must be a number';
+    errors.price = typeof req.body.price === 'number' ? null : 'Price must be a number';
 
     if (req.body.category) {
       if (mongoose.isValidObjectId(req.body.category)) {
@@ -40,7 +40,8 @@ const verifyMeal = async (req, res, next) => {
     }
 
     return next();
-  } catch {
+  } catch (err) {
+    console.log(err);
     return res.status(500).send({
       success: false,
       errors: {

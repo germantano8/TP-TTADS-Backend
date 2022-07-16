@@ -8,6 +8,7 @@ const {
 
 const router = express.Router();
 
+router.get('/', controller.getRestaurants);
 router.get('/:id', verifyMongooseID, controller.getRestaurant);
 router.post('/', verifyRestaurantTags, controller.createRestaurant);
 router.delete('/:id', verifyMongooseID, controller.deleteRestaurant);
