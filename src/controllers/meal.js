@@ -28,13 +28,15 @@ const mealController = {
         name: req.body.name,
         description: req.body.description,
         price: req.body.price,
+        vegan: req.body.vegan,
+        celiac: req.body.celiac,
         category: req.body.category,
-        tags: req.body.tags,
+        restaurant: req.body.restaurant,
       });
-
       await meal.save();
       return res.status(200).send({ success: true, meal });
-    } catch {
+    } catch (error) {
+      console.log(error);
       return res.status(500).send({ success: false, message: 'Error creating meal' });
     }
   },
