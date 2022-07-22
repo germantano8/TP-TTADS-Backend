@@ -14,9 +14,9 @@ router.post('/', verifyRestaurantTags, controller.createRestaurant);
 router.delete('/:id', verifyMongooseID, controller.deleteRestaurant);
 router.put('/:id', verifyMongooseID, controller.updateRestaurant);
 
-router.get('/byTag/:id', controller.getRestaurantsByTag);
+router.get('/byTag/:id', verifyMongooseID, controller.getRestaurantsByTag);
 
-router.put('/:id/location', verifyLocation, controller.addLocation);
-router.delete('/:id/location', controller.removeLocation);
+router.put('/:id/location', verifyMongooseID, verifyLocation, controller.addLocation);
+router.delete('/:id/location', verifyMongooseID, controller.removeLocation);
 
 module.exports = router;

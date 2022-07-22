@@ -1,9 +1,12 @@
 const validator = require('validator');
 const mongoose = require('mongoose');
 const { User, Role } = require('../models/index');
-const { verifyLength } = require('./verifyLength');
+const { isValidLength } = require('../utils/isValidLength');
 
-const verifyUser = async (req, res, next) => {
+const verifyUser = async (req, res, next, isUpdate = false) => {
+
+  /*SI isUpdate = true, EL CHEQUEO DE LOS DATOS SE VAN A HACER SOLO SI ESTÁN EN EL BODY DE LA PETICIÓN*/
+
   try {
     const errors = {
       name: null,
@@ -15,72 +18,80 @@ const verifyUser = async (req, res, next) => {
       role: null,
     };
 
-    // Name and Surname
-    errors.name = verifyLength(req.body.name)
-      ? 'Name must be between 4 and 20 characters'
-      : null;
-    errors.surname = verifyLength(req.body.surname)
-      ? 'Surname must be between 4 and 20 characters'
-      : null;
+
+    // Name
+    if ((isUpdate && req.body.name) || !isUpdate) {
+      errors.name = isValidLength(req.body.name)
+        ? null : 'Name must be between 4 and 20 characters';
+    };
+
+    // Surname
+    if ((isUpdate && req.body.surname) || !isUpdate) {
+      errors.surname = isValidLength(req.body.surname)
+        ? null : 'Surname must be between 4 and 20 characters';
+    };
 
     // Phone
-    if (req.body.phone) {
-      if (!validator.isMobilePhone(req.body.phone)) {
-        errors.phone = 'Phone number is not valid';
+    if ((isUpdate && req.body.phone) || !isUpdate) {
+      if (req.body.phone) {
+        if (!validator.isMobilePhone(req.body.phone)) {
+          errors.phone = 'Not a valid Phone number';
+        }
       }
-    }
+    };
+
 
     // Email
-    if (!(req.body.email && validator.isEmail(req.body.email))) {
-      errors.email = 'Email is required';
-    } else if (!req.params.id) {
-      const email = await User.findOne({ email: req.body.email });
-      if (email) {
-        errors.email = 'Email is already in use';
-      }
-    }
+    if ((isUpdate && req.body.email) || !isUpdate) {
+      if (!validator.isEmail(req.body.email ?? "")) {
+        errors.email = "Not a valid Email";
+
+      } else {
+
+        const email = await User.findOne({ email: req.body.email });
+        if (email) {
+          errors.email = 'Email is already in use';
+        };
+
+      };
+    };
+
 
     // ImageUrl
-    if (req.body.imageUrl) {
-      if (!validator.isURL(req.body.imageUrl)) {
-        errors.imageUrl = 'Image URL is not valid';
-      }
-    }
+    /*ESTO LO VEMOS DESPUÉS, 
+   PERO EN PRINCIPIO BASTA CON GUARDAR UN STRING CON EL NOMBRE DEL ARCHIVO, NO LA URL ENTERA*/
+    if ((isUpdate && req.body.imageUrl) || !isUpdate) {
+      if (req.body.imageUrl) {
+        if (!validator.isURL(req.body.imageUrl)) {
+          errors.imageUrl = 'Not a valid Image URL';
+        }
+      };
+    };
 
     // Password
-    if (
-      !(
-        req.body.password
-        && validator.isLength(req.body.password, { min: 8, max: 32 })
-      )
-    ) {
-      errors.password = 'Password must be between 8 and 32 characters';
-    }
+    if ((isUpdate && req.body.password) || !isUpdate) {
+      errors.password = isValidLength(req.body.password, 8, 32)
+        ? null : 'Password must be between 8 and 32 characters';
+    };
 
     // Role
-    if (!req.body.role) {
-      errors.role = 'There is no role';
-    } else if (mongoose.isValidObjectId(req.body.role)) {
-      const role = await Role.findById(req.body.role);
-      errors.role = role ? null : 'Role is not valid';
-    }
+    if ((isUpdate && req.body.role) || !isUpdate) {
+      if (!mongoose.isValidObjectId(req.body.role)) {
+        errors.role = 'Not a valid Role';
+      } else {
+        const role = await Role.findById(req.body.role);
+        errors.role = role ? null : 'Role does not exist';
+      };
+    };
 
     // If there are errors, return the errors
     if (Object.entries(errors).some((e) => e[1] != null)) {
-      return res.status(400).send({
-        success: false,
-        errors,
-      });
+      return res.status(400).send(errors);
     }
 
     return next();
   } catch {
-    return res.status(500).send({
-      success: false,
-      errors: {
-        message: 'Error creating user',
-      },
-    });
+    return res.status(500).send({ message: 'Error creating User' });
   }
 };
 

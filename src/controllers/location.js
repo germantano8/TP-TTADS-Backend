@@ -17,9 +17,9 @@ const locationController = {
 
       await newLocation.save();
 
-      return res.send({ success: true, newLocation });
+      return res.send({ message: 'Location created successfully' });
     } catch (error) {
-      return res.status(500).send({ success: false, message: 'Error creating location' });
+      return res.status(500).send({ message: 'Error creating location' });
     }
   },
 
@@ -27,11 +27,11 @@ const locationController = {
     try {
       const location = await Location.findById(req.params.id).exec();
 
-      if (!location) return res.status(404).send({ success: false, message: `There is no location with ID: ${req.params.id}` });
+      if (!location) return res.status(404).send({ message: `There is no location with ID: ${req.params.id}` });
 
-      return res.send({ success: true, location });
+      return res.send(location);
     } catch (error) {
-      return res.status(500).send({ success: false, message: 'Error finding location' });
+      return res.status(500).send({ message: 'Error finding location' });
     }
   },
 
@@ -39,11 +39,11 @@ const locationController = {
     try {
       const removedLocation = await Location.findByIdAndRemove(req.params.id).exec();
 
-      if (!removedLocation) return res.status(404).send({ success: false, message: `There is no location with ID: ${req.params.id}` });
+      if (!removedLocation) return res.status(404).send({ message: `There is no location with ID: ${req.params.id}` });
 
-      return res.send({ success: true, removedLocation });
+      return res.send({ message: 'Location deleted successfully' });
     } catch (error) {
-      return res.status(500).send({ success: false, message: 'Error deleting location' });
+      return res.status(500).send({ message: 'Error deleting location' });
     }
   },
 
@@ -58,11 +58,11 @@ const locationController = {
         latitude: req.body.latitude,
       }).exec();
 
-      if (!updatedLocation) return res.status(404).send({ success: false, message: `There is no location with ID: ${req.params.id}` });
+      if (!updatedLocation) return res.status(404).send({ message: `There is no location with ID: ${req.params.id}` });
 
-      return res.status(200).send({ success: true, updatedLocation });
+      return res.send({ message: 'Location updated successfully' });
     } catch (error) {
-      return res.status(500).send({ success: false, message: 'Error updating location' });
+      return res.status(500).send({ message: 'Error updating location' });
     }
   },
 

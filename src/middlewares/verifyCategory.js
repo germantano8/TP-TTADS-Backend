@@ -1,6 +1,7 @@
 const validator = require('validator');
 const mongoose = require('mongoose');
 const { Restaurant } = require('../models/index');
+const { isValidLength } = require('../utils/isValidLength');
 
 const verifyCategory = async (req, res, next) => {
   try {
@@ -9,32 +10,26 @@ const verifyCategory = async (req, res, next) => {
       restaurant: null,
     };
 
-    if (!(req.body.description && validator.isLength(req.body.description, { min: 4, max: 20 }))) {
-      errors.description = 'Description must be between 4 and 20 characters';
-    }
+    errors.description = isValidLength(req.body.description) ? null : 'Description must be between 4 and 20 characters';
 
-    if (!req.body.restaurant) {
-      errors.restaurant = 'Restaurant is required';
-    } else if (mongoose.isValidObjectId(req.body.restaurant)) {
+
+    if (!mongoose.isValidObjectId(req.body.restaurant.toString())) {
+
+      errors.restaurant = 'Not a valid Restaurant';
+
+    } else {
+
       const restaurant = await Restaurant.findById(req.body.restaurant);
-      errors.restaurant = restaurant ? null : 'Restaurant is not valid';
+      errors.restaurant = restaurant ? null : 'Restaurant does not exist';
     }
 
     if (Object.entries(errors).some((e) => e[1] != null)) {
-      return res.status(400).send({
-        success: false,
-        errors,
-      });
+      return res.status(400).send(errors);
     }
 
     return next();
   } catch {
-    return res.status(500).send({
-      success: false,
-      errors: {
-        message: 'Error creating category',
-      },
-    });
+    return res.status(500).send({ message: 'Error creating Category' });
   }
 };
 

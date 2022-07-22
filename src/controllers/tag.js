@@ -4,9 +4,9 @@ const tagController = {
   getTags: async (req, res) => {
     try {
       const tags = await Tag.find({}).exec();
-      return res.status(200).send({ success: true, tags });
+      return res.send(tags);
     } catch (error) {
-      return res.status(500).send({ success: false, message: 'Error finding tags' });
+      return res.status(500).send({ message: 'Error finding tags' });
     }
   },
 
@@ -14,11 +14,11 @@ const tagController = {
     try {
       const tag = await Tag.findById(req.params.id).exec();
 
-      if (!tag) return res.status(404).send({ success: false, message: `There is no tag with ID: ${req.params.id}` });
+      if (!tag) return res.status(404).send({ message: `There is no tag with ID: ${req.params.id}` });
 
-      return res.status(200).send({ success: true, tag });
+      return res.send(tag);
     } catch (error) {
-      return res.status(500).send({ success: false, message: 'Error finding tag' });
+      return res.status(500).send({ message: 'Error finding tag' });
     }
   },
 
@@ -28,9 +28,10 @@ const tagController = {
 
       await newTag.save();
 
-      return res.status(200).send({ success: true, newTag });
+      return res.send({ message: "Tag created successfully" });
     } catch (error) {
-      return res.status(500).send({ success: false, message: 'Error creating tag' });
+      console.log(error);
+      return res.status(500).send({ message: 'Error creating tag' });
     }
   },
 
@@ -38,11 +39,11 @@ const tagController = {
     try {
       const removedTag = await Tag.findByIdAndRemove(req.params.id).exec();
 
-      if (!removedTag) return res.status(404).send({ success: false, message: `There is no tag with ID: ${req.params.id}` });
+      if (!removedTag) return res.status(404).send({ message: `There is no tag with ID: ${req.params.id}` });
 
-      return res.status(200).send({ success: true, removedTag });
+      return res.send({ message: "Tag deleted successfully" });
     } catch (error) {
-      return res.status(500).send({ success: false, message: 'Error deleting tag' });
+      return res.status(500).send({ message: 'Error deleting tag' });
     }
   },
 
@@ -54,11 +55,11 @@ const tagController = {
       )
         .exec();
 
-      if (!updatedTag) return res.status(404).send({ success: false, message: `There is no tag with ID: ${req.params.id}` });
+      if (!updatedTag) return res.status(404).send({ message: `There is no tag with ID: ${req.params.id}` });
 
-      return res.status(200).send({ success: true, updatedTag });
+      return res.send({ message: "Tag updated successfully" });
     } catch (error) {
-      return res.status(500).send({ success: false, message: 'Error updating tag' });
+      return res.status(500).send({ message: 'Error updating tag' });
     }
   },
 };

@@ -4,9 +4,9 @@ const categoryController = {
   getCategories: async (req, res) => {
     try {
       const categories = await Category.find({}).exec();
-      return res.status(200).send({ success: true, categories });
+      return res.send(categories);
     } catch (error) {
-      return res.status(500).send({ success: false, message: 'Error finding categories' });
+      return res.status(500).send({ message: 'Error finding categories' });
     }
   },
 
@@ -14,11 +14,11 @@ const categoryController = {
     try {
       const category = await Category.findById(req.params.id).exec();
 
-      if (!category) return res.status(404).send({ success: false, message: `There is no category with ID: ${req.params.id}` });
+      if (!category) return res.status(404).send({ message: `There is no category with ID: ${req.params.id}` });
 
-      return res.status(200).send({ success: true, category });
+      return res.send(category);
     } catch {
-      return res.status(500).send({ success: false, message: 'Error finding category' });
+      return res.status(500).send({ message: 'Error finding category' });
     }
   },
 
@@ -30,9 +30,9 @@ const categoryController = {
       });
 
       await category.save();
-      return res.status(200).send({ success: true, category });
+      return res.send({message:'Category created successfully'});
     } catch {
-      return res.status(500).send({ success: false, message: 'Error creating category' });
+      return res.status(500).send({ message: 'Error creating category' });
     }
   },
 
@@ -40,11 +40,11 @@ const categoryController = {
     try {
       const removedCategory = await Category.findByIdAndRemove(req.params.id).exec();
 
-      if (!removedCategory) return res.status(404).send({ success: false, message: `There is no category with ID: ${req.params.id}` });
+      if (!removedCategory) return res.status(404).send({ message: `There is no category with ID: ${req.params.id}` });
 
-      return res.status(200).send({ success: true, removedCategory });
+      return res.send({message: 'Category deleted successfully'});
     } catch {
-      return res.status(500).send({ success: false, message: 'Error deleting category' });
+      return res.status(500).send({ message: 'Error deleting category' });
     }
   },
 
@@ -56,11 +56,11 @@ const categoryController = {
       )
         .exec();
 
-      if (!updatedCategory) return res.status(404).send({ success: false, message: `There is no category with ID: ${req.params.id}` });
+      if (!updatedCategory) return res.status(404).send({ message: `There is no category with ID: ${req.params.id}` });
 
-      return res.status(200).send({ success: true, updatedCategory });
+      return res.send({message: 'Category updated successfully'});
     } catch {
-      return res.status(500).send({ success: false, message: 'Error updating category' });
+      return res.status(500).send({ message: 'Error updating category' });
     }
   },
 };
