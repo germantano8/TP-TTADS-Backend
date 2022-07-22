@@ -7,15 +7,9 @@ const userController = {
     try {
       const users = await User.find();
 
-      return res.status(200).send({
-        success: true,
-        users,
-      });
+      return res.send(users);
     } catch {
-      return res.status(500).send({
-        success: false,
-        message: 'Error getting users',
-      });
+      return res.status(500).send({ message: 'Error getting users' });
     }
   },
 
@@ -27,20 +21,11 @@ const userController = {
       const user = detailed ? await User.findById(userId).populate({ path: 'locations', model: 'location' }).populate({ path: 'role' }).populate({ path: 'mainLocation' }) : await User.findById(userId);
 
       if (user) {
-        return res.status(200).send({
-          success: true,
-          user,
-        });
+        return res.send(user);
       }
-      return res.status(400).send({
-        success: false,
-        message: 'User not found',
-      });
+      return res.status(400).send({ message: 'User not found' });
     } catch {
-      return res.status(500).send({
-        success: false,
-        message: 'Error getting user',
-      });
+      return res.status(500).send({ message: 'Error getting user' });
     }
   },
 
@@ -61,16 +46,10 @@ const userController = {
       });
 
       await user.save();
-      return res.status(200).send({
-        success: true,
-        user,
-      });
+      return res.send(user);
     } catch (error) {
       console.log(error);
-      return res.status(500).send({
-        success: false,
-        message: 'Error creating user',
-      });
+      return res.status(500).send({ message: 'Error creating user' });
     }
   },
 
@@ -78,10 +57,7 @@ const userController = {
     try {
       const { email, password } = req.body;
       if (!(email && password)) {
-        return res.status(400).send({
-          success: false,
-          message: 'Email and password are required',
-        });
+        return res.status(400).send({ message: 'Email and password are required' });
       }
       console.log(`${email} - ${password}`);
       const user = await User.findOne({ email });
@@ -89,13 +65,13 @@ const userController = {
       if (!user) {
         return res
           .status(400)
-          .send({ success: false, message: 'No user found' });
+          .send({ message: 'No user found' });
       }
 
       if (!(await bcrypt.compare(password, user.password))) {
         return res
           .status(400)
-          .send({ success: false, message: 'Invalid credentials' });
+          .send({ message: 'Invalid credentials' });
       }
       console.log('Everything valid');
 
@@ -104,12 +80,12 @@ const userController = {
         expiresIn: '2h',
       });
 
-      return res.status(200).send({ success: true, user, token });
+      return res.send({ user, token });
     } catch (error) {
       console.log(error);
       return res
         .status(500)
-        .send({ success: false, message: 'Error while logging in' });
+        .send({ message: 'Error while logging in' });
     }
   },
 
@@ -123,20 +99,11 @@ const userController = {
       // new:true returns the updated user and not the old one
 
       if (user) {
-        return res.status(200).send({
-          success: true,
-          message: 'User updated successfully',
-        });
+        return res.send(user);
       }
-      return res.status(400).send({
-        success: false,
-        message: 'User not found',
-      });
+      return res.status(400).send({ message: 'User not found' });
     } catch {
-      return res.status(500).send({
-        success: false,
-        message: 'Error updating user',
-      });
+      return res.status(500).send({ message: 'Error updating user' });
     }
   },
 
@@ -147,20 +114,11 @@ const userController = {
       const userResponse = await User.findByIdAndRemove(userId);
 
       if (userResponse) {
-        return res.status(200).send({
-          success: true,
-          message: 'User deleted successfully',
-        });
+        return res.send({ message: 'User deleted successfully' });
       }
-      return res.status(400).send({
-        success: false,
-        message: 'User not found',
-      });
+      return res.status(400).send({ message: 'User not found' });
     } catch {
-      return res.status(500).send({
-        success: false,
-        message: 'Error deleting user',
-      });
+      return res.status(500).send({ message: 'Error deleting user' });
     }
   },
 
@@ -169,7 +127,7 @@ const userController = {
 
     const user = await User.findById(userId);
     if (!user) {
-      res.status(404).send({ success: false, message: 'User not found' });
+      return res.status(404).send({ message: 'User not found' });
     }
     user.mainLocation = req.body.locationId;
     const { locations } = user;
@@ -182,24 +140,17 @@ const userController = {
     });
 
     if (!updatedUser) {
-      return res.status(500).send({
-        success: false,
-        message: 'Error trying to add location',
-      });
+      return res.status(500).send({ message: 'Error trying to add location' });
     }
 
-    return res.status(200).send({
-      success: true,
-      message: 'User updated successfully',
-      user: updatedUser,
-    });
+    return res.send({ message: 'User updated successfully' });
   },
   addLocation: async (req, res) => {
     const userId = req.params.id;
 
     const user = await User.findById(userId);
     if (!user) {
-      res.status(404).send({ success: false, message: 'User not found' });
+      return res.status(404).send({ message: 'User not found' });
     }
 
     if (user.locations.indexOf(req.body.locationId) === -1) {
@@ -211,30 +162,23 @@ const userController = {
     });
 
     if (!updatedUser) {
-      return res.status(500).send({
-        success: false,
-        message: 'Error trying to add location',
-      });
+      return res.status(500).send({ message: 'Error trying to add location' });
     }
 
-    return res.status(200).send({
-      success: true,
-      message: 'User updated successfully',
-      user: updatedUser,
-    });
+    return res.send({ message: 'User updated successfully' });
   },
   removeMainLocation: async (req, res) => {
     const userId = req.params.id;
 
     const user = await User.findById(userId);
     if (!user) {
-      res.status(404).send({ success: false, message: 'User not found' });
+      return res.status(404).send({ message: 'User not found' });
     }
 
     const locationId = user.mainLocation;
     const index = user.locations.indexOf(locationId);
     if (index === -1) {
-      res.status(404).send({ success: false, message: 'Location not found' });
+      return res.status(404).send({ message: 'Location not found' });
     }
     user.locations.splice(index, 1);
     user.mainLocation = null;
@@ -244,30 +188,23 @@ const userController = {
     });
 
     if (!updatedUser) {
-      return res.status(500).send({
-        success: false,
-        message: 'Error trying to remove location',
-      });
+      return res.status(500).send({ message: 'Error trying to remove location' });
     }
 
-    return res.status(200).send({
-      success: true,
-      message: 'User updated successfully',
-      user: updatedUser,
-    });
+    return res.send({ message: 'User updated successfully' });
   },
   removeLocation: async (req, res) => {
     const userId = req.params.id;
 
     const user = await User.findById(userId);
     if (!user) {
-      res.status(404).send({ success: false, message: 'User not found' });
+      return res.status(404).send({ message: 'User not found' });
     }
 
     const { locationId } = req.body;
     const index = user.locations.indexOf(locationId);
     if (index === -1) {
-      res.status(404).send({ success: false, message: 'Location not found' });
+      return res.status(404).send({ message: 'Location not found' });
     }
     user.locations.splice(index, 1);
 
@@ -276,17 +213,10 @@ const userController = {
     });
 
     if (!updatedUser) {
-      return res.status(500).send({
-        success: false,
-        message: 'Error trying to remove location',
-      });
+      return res.status(500).send({ message: 'Error trying to remove location' });
     }
 
-    return res.status(200).send({
-      success: true,
-      message: 'User updated successfully',
-      user: updatedUser,
-    });
+    return res.send({ message: 'User updated successfully' });
   },
 };
 

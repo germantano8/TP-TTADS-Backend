@@ -6,26 +6,23 @@ const roleController = {
       if (err) {
         return res
           .status(500)
-          .send({ success: false, message: 'Error finding roles' });
+          .send({ message: 'Error finding roles' });
       }
 
       if (!roles) {
         return res
           .status(404)
-          .send({ success: false, message: 'There are no roles' });
+          .send({ message: 'There are no roles' });
       }
 
-      return res.status(200).send({
-        success: true,
-        roles,
-      });
+      return res.send(roles);
     });
   },
 
   getRole: async (req, res) => {
     const roleId = req.params.id;
     if (roleId == null) {
-      return res.status(400).send({ success: false, message: 'Wrong request' });
+      return res.status(400).send({ message: 'Wrong request' });
     }
     try {
       const role = await Role.findById(roleId);
@@ -33,16 +30,13 @@ const roleController = {
       if (!role) {
         return res
           .status(404)
-          .send({ success: false, message: 'Could not find role' });
+          .send({ message: 'Could not find role' });
       }
-      return res.status(200).send({
-        success: true,
-        role,
-      });
+      return res.send(role);
     } catch (error) {
       return res
         .status(500)
-        .send({ success: false, message: 'Error finding role' });
+        .send({ message: 'Error finding role' });
     }
   },
 
@@ -55,16 +49,16 @@ const roleController = {
       if (err) {
         return res
           .status(500)
-          .send({ success: false, message: 'Error creating role' });
+          .send({ message: 'Error creating role' });
       }
 
       if (!insertedRole) {
         return res
           .status(500)
-          .send({ success: false, message: 'Error creating role' });
+          .send({ message: 'Error creating role' });
       }
 
-      return res.status(200).send({ success: true, role: insertedRole });
+      return res.send({message:"Role created successfully"});
     });
   },
 
@@ -79,22 +73,16 @@ const roleController = {
       if (err) {
         return res
           .status(500)
-          .send({
-            success: false,
-            message: `Error updating role${err.message}`,
-          });
+          .send({ message: `Error updating role${err.message}` });
       }
 
       if (!roleUpdated) {
         return res
           .status(500)
-          .send({ success: false, message: 'Error updating role' });
+          .send({ message: 'Error updating role' });
       }
 
-      return res.status(200).send({
-        success: true,
-        role: roleUpdated,
-      });
+      return res.send({message:"Role updated successfully"});
     });
   },
 
@@ -106,9 +94,7 @@ const roleController = {
 
       if (!roleRemoved) return res.status(404).send({ message: 'Did not find role' });
 
-      return res.status(200).send({
-        role: roleRemoved,
-      });
+      return res.send({message:"Role deleted successfully"});
     });
   },
 };

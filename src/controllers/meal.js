@@ -4,9 +4,9 @@ const mealController = {
   getMeals: async (req, res) => {
     try {
       const meals = await Meal.find({}).exec();
-      return res.status(200).send({ success: true, meals });
+      return res.send(meals);
     } catch {
-      return res.status(500).send({ success: false, message: 'Error finding meals' });
+      return res.status(500).send({ message: 'Error finding meals' });
     }
   },
 
@@ -14,11 +14,11 @@ const mealController = {
     try {
       const meal = await Meal.findById(req.params.id).exec();
 
-      if (!meal) return res.status(404).send({ success: false, message: `There is no meal with ID: ${req.params.id}` });
+      if (!meal) return res.status(404).send({ message: `There is no meal with ID: ${req.params.id}` });
 
-      return res.status(200).send({ success: true, meal });
+      return res.send(meal);
     } catch {
-      return res.status(500).send({ success: false, message: 'Error finding meal' });
+      return res.status(500).send({ message: 'Error finding meal' });
     }
   },
 
@@ -34,10 +34,10 @@ const mealController = {
         restaurant: req.body.restaurant,
       });
       await meal.save();
-      return res.status(200).send({ success: true, meal });
+      return res.send({message: 'Meal created successfully'});
     } catch (error) {
       console.log(error);
-      return res.status(500).send({ success: false, message: 'Error creating meal' });
+      return res.status(500).send({ message: 'Error creating meal' });
     }
   },
 
@@ -45,11 +45,11 @@ const mealController = {
     try {
       const removedMeal = await Meal.findByIdAndRemove(req.params.id).exec();
 
-      if (!removedMeal) return res.status(404).send({ success: false, message: `There is no meal with ID: ${req.params.id}` });
+      if (!removedMeal) return res.status(404).send({ message: `There is no meal with ID: ${req.params.id}` });
 
-      return res.status(200).send({ success: true, removedMeal });
+      return res.send({message: "Meal deleted successfully"});
     } catch {
-      return res.status(500).send({ success: false, message: 'Error deleting meal' });
+      return res.status(500).send({ message: 'Error deleting meal' });
     }
   },
 
@@ -60,14 +60,15 @@ const mealController = {
         description: req.body.description,
         price: req.body.price,
         category: req.body.category,
-        tags: req.body.tags,
+        vegan: req.body.vegan,
+        celiac: req.body.celiac,
       }).exec();
 
-      if (!updatedMeal) return res.status(404).send({ success: false, message: `There is no meal with ID: ${req.params.id}` });
+      if (!updatedMeal) return res.status(404).send({ message: `There is no meal with ID: ${req.params.id}` });
 
-      return res.status(200).send({ success: true, updatedMeal });
+      return res.send({message: "Meal updated successfully"});
     } catch {
-      return res.status(500).send({ success: false, message: 'Error updating meal' });
+      return res.status(500).send({ message: 'Error updating meal' });
     }
   },
 };

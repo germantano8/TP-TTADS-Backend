@@ -1,67 +1,44 @@
 const validator = require('validator');
-const { Restaurant, User } = require('../models/index');
+const { Restaurant } = require('../models/index');
+const mongoose = require('mongoose');
 
 const verifyOrder = async (req, res, next) => {
   try {
     const errors = {
       restaurant: null,
-      user: null,
       meals: null,
-      total: null,
     };
 
     // Restaurant
-    if (!req.body.restaurant) {
-      errors.restaurant = 'Restaurant is required';
+    if (!mongoose.isValidObjectId(req.body.restaurant.toString())) {
+      errors.restaurant = 'Not a valid restaurant';
     } else {
       const restaurant = await Restaurant.findById(req.body.restaurant);
       if (!restaurant) {
-        errors.restaurant = 'Restaurant is not valid';
+        errors.restaurant = 'Restaurant does not exist';
       }
-    }
+    };
 
-    // User
-    if (!req.body.user) {
-      errors.user = 'User is required';
-    } else {
-      const user = await User.findById(req.body.user);
-      if (!user) {
-        errors.user = 'User is not valid';
-      }
-    }
 
     // Meals
-    if (!req.body.meals) {
-      errors.meals = 'Meals are required';
+    if (!(Array.isArray(req.body.meals) && req.body.meals.length > 0)) {
+      errors.meals = "Must be an array of meals of length greater than 0";
     } else {
-      const meals = await Meal.find({ _id: { $in: req.body.meals } });
-      if (meals.length !== req.body.meals.length) {
-        errors.meals = 'Meals are not valid';
-      }
-    }
 
-    // Total
-    if (!req.body.total) {
-      errors.total = 'Total is required';
-    } else if (!validator.isNumeric(req.body.total)) {
-      errors.total = 'Total is not valid';
-    }
+      const atLeastOneInvalidMeal = !req.body.meals.every(meal => mongoose.Types.ObjectId.isValid(meal.toString()));
+
+      if (atLeastOneInvalidMeal) errors.meals = "There is one or more invalid meals";
+
+    };
 
     if (Object.entries(errors).some((e) => e[1] != null)) {
-      return res.status(400).send({
-        success: false,
-        errors,
-      });
+      return res.status(400).send(errors);
     }
 
     return next();
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      errors: {
-        message: 'Error creating order',
-      },
-    });
+    console.log(error);
+    res.status(500).json({ message: 'Error creating order' });
   }
 };
 

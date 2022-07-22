@@ -1,6 +1,65 @@
 const { Restaurant, Meal } = require('../models/index');
 
 const restaurantController = {
+
+  getRestaurants: async (req, res) => {
+    try {
+      const restaurants = await Restaurant.find({}).exec();
+      return res.send(restaurants);
+    } catch (error) {
+      return res
+        .status(500)
+        .send({ message: 'Error finding restaurants' });
+    }
+  },
+
+  getRestaurantsByTag: async (req, res) => {
+    try {
+      const tagId = req.params.id;
+      const restaurants = await Restaurant.find({
+        tags: tagId,
+      }).exec();
+      return res.send(restaurants);
+    } catch (error) {
+      return res
+        .status(500)
+        .send({ message: 'Error finding restaurants' });
+    }
+  },
+
+  getRestaurant: async (req, res) => {
+    try {
+      const { detailed } = req.query;
+      let restaurant = null;
+
+      if (!detailed) {
+        restaurant = await Restaurant.findById(req.params.id).exec();
+
+      } else {
+
+        const restaurantModel = await Restaurant.findById(req.params.id).populate({ path: 'location' }).exec();
+
+        if (restaurantModel) {
+
+          const meals = await Meal.find({ restaurant: req.params.id }).exec();
+          restaurant = restaurantModel.toObject();
+          restaurant.meals = meals;
+
+        };
+
+      }
+      if (!restaurant) {
+        return res.status(404).send({ message: `There is no restaurant with ID: ${req.params.id}`, });
+      }
+      return res.send(restaurant);
+    } catch (error) {
+      console.log(error);
+      return res
+        .status(500)
+        .send({ message: 'Error finding restaurant' });
+    }
+  },
+
   createRestaurant: async (req, res) => {
     try {
       const newRestaurant = new Restaurant({
@@ -13,62 +72,11 @@ const restaurantController = {
       });
 
       await newRestaurant.save();
-      return res.status(200).send({ success: true, newRestaurant });
+      return res.send({ message: "Restaurant created successfully" });
     } catch (error) {
       return res
         .status(500)
-        .send({ success: false, message: 'Error creating restaurant' });
-    }
-  },
-
-  getRestaurants: async (req, res) => {
-    try {
-      const restaurants = await Restaurant.find({}).exec();
-      return res.status(200).send({ success: true, restaurants });
-    } catch (error) {
-      return res
-        .status(500)
-        .send({ success: false, message: 'Error finding restaurants' });
-    }
-  },
-
-  getRestaurantsByTag: async (req, res) => {
-    try {
-      const tagId = req.params.id;
-      const restaurants = await Restaurant.find({
-        tags: tagId,
-      }).exec();
-      return res.status(200).send({ success: true, restaurants });
-    } catch (error) {
-      return res
-        .status(500)
-        .send({ success: false, message: 'Error finding restaurants' });
-    }
-  },
-
-  getRestaurant: async (req, res) => {
-    try {
-      const { detailed } = req.query;
-      let restaurant = null;
-      if (!detailed) {
-        restaurant = await Restaurant.findById(req.params.id).exec();
-      } else {
-        const restaurantModel = await Restaurant.findById(req.params.id).populate({ path: 'location' }).exec();
-        const meals = await Meal.find({ restaurant: req.params.id }).exec();
-        restaurant = restaurantModel.toObject();
-        restaurant.meals = meals;
-      }
-      if (!restaurant) {
-        return res.status(404).send({
-          success: false,
-          message: `There is no restaurant with ID: ${req.params.id}`,
-        });
-      }
-      return res.status(200).send({ success: true, restaurant });
-    } catch (error) {
-      return res
-        .status(500)
-        .send({ success: false, message: 'Error finding restaurant' });
+        .send({ message: 'Error creating restaurant' });
     }
   },
 
@@ -79,17 +87,14 @@ const restaurantController = {
       ).exec();
 
       if (!removedRestaurant) {
-        return res.status(404).send({
-          success: false,
-          message: `There is no restaurant with ID: ${req.params.id}`,
-        });
+        return res.status(404).send({ message: `There is no restaurant with ID: ${req.params.id}` });
       }
 
-      return res.status(200).send({ success: true, removedRestaurant });
+      return res.send({ message: "Restaurant deleted successfully" });
     } catch (error) {
       return res
         .status(500)
-        .send({ success: false, message: 'Error deleting restaurant' });
+        .send({ message: 'Error deleting restaurant' });
     }
   },
 
@@ -107,17 +112,14 @@ const restaurantController = {
       ).exec();
 
       if (!updatedRestaurant) {
-        return res.status(404).send({
-          success: false,
-          message: `There is no restaurant with ID: ${req.params.id}`,
-        });
+        return res.status(404).send({ message: `There is no restaurant with ID: ${req.params.id}` });
       }
 
-      return res.status(200).send({ success: true, updatedRestaurant });
+      return res.send({ message: "Restaurant updated successfully" });
     } catch (error) {
       return res
         .status(500)
-        .send({ success: false, message: 'Error updating restaurant' });
+        .send({ message: 'Error updating restaurant' });
     }
   },
 
@@ -129,7 +131,7 @@ const restaurantController = {
       if (!restaurant) {
         return res
           .status(404)
-          .send({ success: false, message: 'Restaurant not found' });
+          .send({ message: 'Restaurant not found' });
       }
       restaurant.location = req.body.locationId;
 
@@ -142,22 +144,12 @@ const restaurantController = {
       );
 
       if (!updatedRestaurant) {
-        return res.status(500).send({
-          success: false,
-          message: 'Error trying to add location',
-        });
+        return res.status(500).send({ message: 'Error trying to add location' });
       }
 
-      return res.status(200).send({
-        success: true,
-        message: 'Restaurant updated successfully',
-        restaurant: updatedRestaurant,
-      });
+      return res.send({ message: "Location added to Restaurant successfully" });
     } catch (error) {
-      return res.status(500).send({
-        success: false,
-        message: 'Error creating restaurant',
-      });
+      return res.status(500).send({ message: 'Error creating restaurant' });
     }
   },
 
@@ -170,7 +162,7 @@ const restaurantController = {
       if (!restaurant) {
         return res
           .status(404)
-          .send({ success: false, message: 'Restaurant not found' });
+          .send({ message: 'Restaurant not found' });
       }
 
       restaurant.location = null;
@@ -184,23 +176,13 @@ const restaurantController = {
       );
 
       if (!updatedRestaurant) {
-        return res.status(500).send({
-          success: false,
-          message: 'Error trying to remove location from restaurant',
-        });
+        return res.status(500).send({ message: 'Error trying to remove location from restaurant' });
       }
 
-      return res.status(200).send({
-        success: true,
-        message: 'Location removed succesfully',
-        restaurant: updatedRestaurant,
-      });
+      return res.send({ message: "Location deleted from Restaurant successfully" });
     } catch (error) {
       console.log(error);
-      return res.status(500).send({
-        success: false,
-        message: 'Error removing location from restaurant',
-      });
+      return res.status(500).send({ message: 'Error removing location from restaurant' });
     }
   },
 };

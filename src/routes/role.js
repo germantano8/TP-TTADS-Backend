@@ -4,7 +4,7 @@ const { auth } = require('../middlewares');
 
 const router = express.Router();
 
-router.get('', auth, controller.getRoles);
+router.get('', controller.getRoles);
 router.get('/:id/', controller.getRole);
 router.post('/', controller.createRole);
 router.delete('/:id/', controller.deleteRole);
