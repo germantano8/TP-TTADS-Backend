@@ -2,6 +2,7 @@ const express = require('express');
 const controller = require('../controllers/restaurant');
 const {
   verifyMongooseID,
+  verifyRestaurant,
   verifyLocation,
   verifyRestaurantTags,
 } = require('../middlewares');
@@ -10,9 +11,9 @@ const router = express.Router();
 
 router.get('/', controller.getRestaurants);
 router.get('/:id', verifyMongooseID, controller.getRestaurant);
-router.post('/', verifyRestaurantTags, controller.createRestaurant);
+router.post('/', verifyRestaurant, verifyRestaurantTags, controller.createRestaurant);
 router.delete('/:id', verifyMongooseID, controller.deleteRestaurant);
-router.put('/:id', verifyMongooseID, controller.updateRestaurant);
+router.put('/:id', verifyMongooseID, verifyRestaurant, controller.updateRestaurant);
 
 router.get('/byTag/:id', verifyMongooseID, controller.getRestaurantsByTag);
 
