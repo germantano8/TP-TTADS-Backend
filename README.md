@@ -3,7 +3,7 @@
 # Como instalar
 
 1. Ejecutar en una linea de comando 
-` git clone https://github.com/germantano8/TP-TTADS-Backend/edit/main/README.md ` 
+` git clone https://github.com/germantano8/TP-TTADS-Backend ` 
 2. Copiar el archivo .env-example como .env
 3. Reemplazar los valores del .env por los del entorno
 4. Correr `npm install` en la terminal
