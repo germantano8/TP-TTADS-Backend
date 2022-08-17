@@ -1,5 +1,15 @@
 # TP Backend TTADS
 
+# Como instalar
+
+1. Ejecutar en una linea de comando 
+` git clone https://github.com/germantano8/TP-TTADS-Backend/edit/main/README.md ` 
+2. Copiar el archivo .env-example como .env
+3. Reemplazar los valores del .env por los del entorno
+4. Correr `npm install` en la terminal
+5. Correr `npm start` en la terminal
+6. El servidor esta deployeado en http://localhost:3700
+
 ## 1 - Enunciado
 
 ### 1.1 - Desarrollo
