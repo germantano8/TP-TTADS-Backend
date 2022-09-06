@@ -4,7 +4,7 @@ const mealController = {
   getMeals: async (req, res) => {
     try {
       const meals = await Meal.find({}).exec();
-      return res.send(meals);
+      return res.status(200).send(meals);
     } catch {
       return res.status(500).send({ message: 'Error finding meals' });
     }
@@ -16,7 +16,7 @@ const mealController = {
 
       if (!meal) return res.status(404).send({ message: `There is no meal with ID: ${req.params.id}` });
 
-      return res.send(meal);
+      return res.status(200).send(meal);
     } catch {
       return res.status(500).send({ message: 'Error finding meal' });
     }
@@ -34,9 +34,8 @@ const mealController = {
         restaurant: req.body.restaurant,
       });
       await meal.save();
-      return res.send({message: 'Meal created successfully'});
+      return res.status(201).send({message: 'Meal created successfully'});
     } catch (error) {
-      console.log(error);
       return res.status(500).send({ message: 'Error creating meal' });
     }
   },
@@ -47,7 +46,7 @@ const mealController = {
 
       if (!removedMeal) return res.status(404).send({ message: `There is no meal with ID: ${req.params.id}` });
 
-      return res.send({message: "Meal deleted successfully"});
+      return res.status(200).send({message: "Meal deleted successfully"});
     } catch {
       return res.status(500).send({ message: 'Error deleting meal' });
     }
@@ -66,7 +65,7 @@ const mealController = {
 
       if (!updatedMeal) return res.status(404).send({ message: `There is no meal with ID: ${req.params.id}` });
 
-      return res.send({message: "Meal updated successfully"});
+      return res.status(200).send({message: "Meal updated successfully"});
     } catch {
       return res.status(500).send({ message: 'Error updating meal' });
     }

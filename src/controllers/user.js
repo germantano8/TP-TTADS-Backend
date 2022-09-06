@@ -7,7 +7,7 @@ const userController = {
     try {
       const users = await User.find();
 
-      return res.send(users);
+      return res.status(200).send(users);
     } catch {
       return res.status(500).send({ message: 'Error getting users' });
     }
@@ -21,7 +21,7 @@ const userController = {
       const user = detailed ? await User.findById(userId).populate({ path: 'locations', model: 'location' }).populate({ path: 'role' }).populate({ path: 'mainLocation' }) : await User.findById(userId);
 
       if (user) {
-        return res.send(user);
+        return res.status(200).send(user);
       }
       return res.status(400).send({ message: 'User not found' });
     } catch {
@@ -32,7 +32,6 @@ const userController = {
   createUser: async (req, res) => {
     try {
       const { password } = req.body;
-      console.log(`Password ${password}`);
       const encryptedPassword = await bcrypt.hash(password, 10);
 
       const user = new User({
@@ -46,9 +45,8 @@ const userController = {
       });
 
       await user.save();
-      return res.send(user);
+      return res.status(201).send(user);
     } catch (error) {
-      console.log(error);
       return res.status(500).send({ message: 'Error creating user' });
     }
   },
@@ -59,7 +57,6 @@ const userController = {
       if (!(email && password)) {
         return res.status(400).send({ message: 'Email and password are required' });
       }
-      console.log(`${email} - ${password}`);
       const user = await User.findOne({ email });
 
       if (!user) {
@@ -73,16 +70,14 @@ const userController = {
           .status(400)
           .send({ message: 'Invalid credentials' });
       }
-      console.log('Everything valid');
 
       const key = process.env.TOKEN_KEY || '';
       const token = jwt.sign({ user_id: user._id, email }, key, {
         expiresIn: '2h',
       });
 
-      return res.send({ user, token });
+      return res.status(200).send({ user, token });
     } catch (error) {
-      console.log(error);
       return res
         .status(500)
         .send({ message: 'Error while logging in' });
@@ -99,7 +94,7 @@ const userController = {
       // new:true returns the updated user and not the old one
 
       if (user) {
-        return res.send(user);
+        return res.status(200).send(user);
       }
       return res.status(400).send({ message: 'User not found' });
     } catch {
@@ -114,7 +109,7 @@ const userController = {
       const userResponse = await User.findByIdAndRemove(userId);
 
       if (userResponse) {
-        return res.send({ message: 'User deleted successfully' });
+        return res.status(200).send({ message: 'User deleted successfully' });
       }
       return res.status(400).send({ message: 'User not found' });
     } catch {
@@ -143,7 +138,7 @@ const userController = {
       return res.status(500).send({ message: 'Error trying to add location' });
     }
 
-    return res.send({ message: 'User updated successfully' });
+    return res.status(200).send({ message: 'User updated successfully' });
   },
   addLocation: async (req, res) => {
     const userId = req.params.id;
@@ -165,7 +160,7 @@ const userController = {
       return res.status(500).send({ message: 'Error trying to add location' });
     }
 
-    return res.send({ message: 'User updated successfully' });
+    return res.status(200).send({ message: 'User updated successfully' });
   },
   removeMainLocation: async (req, res) => {
     const userId = req.params.id;
@@ -191,7 +186,7 @@ const userController = {
       return res.status(500).send({ message: 'Error trying to remove location' });
     }
 
-    return res.send({ message: 'User updated successfully' });
+    return res.status(200).send({ message: 'User updated successfully' });
   },
   removeLocation: async (req, res) => {
     const userId = req.params.id;
@@ -216,7 +211,7 @@ const userController = {
       return res.status(500).send({ message: 'Error trying to remove location' });
     }
 
-    return res.send({ message: 'User updated successfully' });
+    return res.status(200).send({ message: 'User updated successfully' });
   },
 };
 

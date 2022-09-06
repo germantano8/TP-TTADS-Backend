@@ -4,7 +4,7 @@ const orderController = {
   getOrders: async (req, res) => {
     try {
       const orders = await Order.find({}).exec();
-      return res.send(orders);
+      return res.status(200).send(orders);
     } catch (error) {
       return res.status(500).send({ message: 'Error finding orders' });
     }
@@ -16,7 +16,7 @@ const orderController = {
 
       if (!order) return res.status(404).send({ message: `There is no order with ID: ${req.params.id}` });
 
-      return res.send(order);
+      return res.status(200).send(order);
     } catch {
       return res.status(500).send({ message: 'Error finding order' });
     }
@@ -37,9 +37,8 @@ const orderController = {
       const order = new Order(newOrder);
 
       await order.save();
-      return res.send({ message: "Order created successfully" });
+      return res.status(201).send({ message: "Order created successfully" });
     } catch (error) {
-      console.log(error);
       return res.status(500).send({ message: 'Error creating order' });
     }
   },
@@ -50,7 +49,7 @@ const orderController = {
 
       if (!removedOrder) return res.status(404).send({ message: `There is no order with ID: ${req.params.id}` });
 
-      return res.send({ message: "Order deleted successfully" });
+      return res.status(200).send({ message: "Order deleted successfully" });
     } catch {
       return res.status(500).send({ message: 'Error deleting order' });
     }
@@ -66,7 +65,7 @@ const orderController = {
 
       if (!updatedOrder) return res.status(404).send({ message: `There is no order with ID: ${req.params.id}` });
 
-      return res.send({ message: "Order updated successfully" });
+      return res.status(200).send({ message: "Order updated successfully" });
     } catch {
       return res.status(500).send({ message: 'Error updating order' });
     }

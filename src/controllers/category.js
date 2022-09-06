@@ -4,7 +4,7 @@ const categoryController = {
   getCategories: async (req, res) => {
     try {
       const categories = await Category.find({}).exec();
-      return res.send(categories);
+      return res.status(200).send(categories);
     } catch (error) {
       return res.status(500).send({ message: 'Error finding categories' });
     }
@@ -16,7 +16,7 @@ const categoryController = {
 
       if (!category) return res.status(404).send({ message: `There is no category with ID: ${req.params.id}` });
 
-      return res.send(category);
+      return res.status(200).send(category);
     } catch {
       return res.status(500).send({ message: 'Error finding category' });
     }
@@ -30,7 +30,8 @@ const categoryController = {
       });
 
       await category.save();
-      return res.send({message:'Category created successfully'});
+      return res.status(201).send({message:'Category created successfully'});
+
     } catch {
       return res.status(500).send({ message: 'Error creating category' });
     }
@@ -42,7 +43,7 @@ const categoryController = {
 
       if (!removedCategory) return res.status(404).send({ message: `There is no category with ID: ${req.params.id}` });
 
-      return res.send({message: 'Category deleted successfully'});
+      return res.status(200).send({message: 'Category deleted successfully'});
     } catch {
       return res.status(500).send({ message: 'Error deleting category' });
     }
@@ -58,7 +59,7 @@ const categoryController = {
 
       if (!updatedCategory) return res.status(404).send({ message: `There is no category with ID: ${req.params.id}` });
 
-      return res.send({message: 'Category updated successfully'});
+      return res.status(200).send({message: 'Category updated successfully'});
     } catch {
       return res.status(500).send({ message: 'Error updating category' });
     }

@@ -52,7 +52,6 @@ const verifyMeal = async (req, res, next, isUpdate = false) => {
 
     return next();
   } catch (err) {
-    console.log(err);
     return res.status(500).send({ message: 'Error creating Meal', });
   }
 };
