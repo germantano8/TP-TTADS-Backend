@@ -6,7 +6,7 @@ const restaurantController = {
     try {
       const restaurants = await Restaurant.find(req.query.tag ? {
         tags: req.query.tag,
-      } : {}).exec();
+      } : {}).populate({ path: 'location' }).exec();
 
       return res.status(200).send(restaurants);
     } catch (error) {
