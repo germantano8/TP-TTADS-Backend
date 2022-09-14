@@ -29,6 +29,10 @@ const userController = {
     }
   },
 
+  getSession: async (req, res) => {
+    res.status(200).send(req.user);
+  },
+
   createUser: async (req, res) => {
     try {
       const { password } = req.body;
@@ -61,7 +65,7 @@ const userController = {
 
       if (!user) {
         return res
-          .status(400)
+          .status(404)
           .send({ message: 'No user found' });
       }
 
@@ -71,13 +75,20 @@ const userController = {
           .send({ message: 'Invalid credentials' });
       }
 
+      let payload = {...user._doc};
+
+      delete payload.password;
+
       const key = process.env.TOKEN_KEY || '';
-      const token = jwt.sign({ user_id: user._id, email }, key, {
+      const token = jwt.sign(payload, key, {
         expiresIn: '2h',
       });
 
-      return res.status(200).send({ user, token });
+      res.cookie("token", token, { maxAge: 1000 * 60 * 60 * 2, httpOnly: true })
+
+      return res.status(200).send({ payload, token });
     } catch (error) {
+      console.log(error);
       return res
         .status(500)
         .send({ message: 'Error while logging in' });
