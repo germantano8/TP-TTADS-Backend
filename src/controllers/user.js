@@ -75,7 +75,7 @@ const userController = {
           .send({ message: 'Invalid credentials' });
       }
 
-      let payload = {...user._doc};
+      let payload = { ...user._doc };
 
       delete payload.password;
 
@@ -93,6 +93,11 @@ const userController = {
         .status(500)
         .send({ message: 'Error while logging in' });
     }
+  },
+
+  logout: async (req, res) => {
+    res.clearCookie("token");
+    res.status(200).send({message:'Logged out successfully'});
   },
 
   updateUser: async (req, res) => {

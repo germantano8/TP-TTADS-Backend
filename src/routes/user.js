@@ -11,6 +11,7 @@ const router = express.Router();
 
 router.get('/', controller.getUsers);
 router.get('/session', auth, controller.getSession)
+router.get('/logout', auth ,controller.logout);
 router.get('/:id', verifyMongooseID, controller.getUser);
 router.post('/register', verifyUser, controller.createUser);
 router.post('/login', controller.login);
