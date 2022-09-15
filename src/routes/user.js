@@ -1,5 +1,6 @@
 const express = require('express');
 const controller = require('../controllers/user');
+const auth = require('../middlewares/auth-middleware');
 const {
   verifyMongooseID,
   verifyUser,
@@ -8,8 +9,10 @@ const {
 
 const router = express.Router();
 
-router.get('', controller.getUsers);
-router.get('/:id/', verifyMongooseID, controller.getUser);
+router.get('/', controller.getUsers);
+router.get('/session', auth, controller.getSession)
+router.get('/logout', auth ,controller.logout);
+router.get('/:id', verifyMongooseID, controller.getUser);
 router.post('/register', verifyUser, controller.createUser);
 router.post('/login', controller.login);
 router.delete('/:id/', verifyMongooseID, controller.deleteUser);
