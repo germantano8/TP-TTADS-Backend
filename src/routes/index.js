@@ -6,6 +6,7 @@ const user = require("./user");
 const tag = require("./tag");
 const category = require("./category");
 const meal = require("./meal");
+const order = require("./order");
 const location = require("./location");
 const restaurant = require("./restaurant");
 const uploads = require("../middlewares/disk.ts");
@@ -33,6 +34,7 @@ router.use("/users", user);
 router.use("/tags", tag);
 router.use("/categories", category);
 router.use("/meals", meal);
+router.use("/orders", order);
 router.use("/locations", location);
 router.use("/restaurants", restaurant);
 
