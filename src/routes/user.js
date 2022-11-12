@@ -3,7 +3,7 @@ const controller = require('../controllers/user');
 const auth = require('../middlewares/auth-middleware');
 const {
   verifyMongooseID,
-  verifyUser,
+  verifyUserWrapper,
   verifyLocation,
 } = require('../middlewares/index');
 
@@ -11,12 +11,12 @@ const router = express.Router();
 
 router.get('/', controller.getUsers);
 router.get('/session', auth, controller.getSession)
-router.get('/logout', auth ,controller.logout);
+router.get('/logout', auth, controller.logout);
 router.get('/:id', verifyMongooseID, controller.getUser);
-router.post('/register', verifyUser, controller.createUser);
+router.post('/register', verifyUserWrapper(false), controller.createUser);
 router.post('/login', controller.login);
 router.delete('/:id/', verifyMongooseID, controller.deleteUser);
-router.put('/:id/', verifyMongooseID, (req, res, next) => verifyUser(req, res, next, true), controller.updateUser);
+router.put('/:id/', verifyMongooseID, verifyUserWrapper(true), controller.updateUser);
 
 router.post('/:id/main_location', verifyMongooseID, verifyLocation, controller.addMainLocation);
 router.delete('/:id/main_location', verifyMongooseID, controller.removeMainLocation);

@@ -2,6 +2,7 @@ const express = require('express');
 const controller = require('../controllers/restaurant');
 const {
   verifyMongooseID,
+  verifyMongooseIDWrapper,
   verifyRestaurant,
   verifyLocation,
   verifyRestaurantTags,
@@ -11,7 +12,7 @@ const router = express.Router();
 
 router.get('/', (req, res, next) => {
 
-  if (req.query.tag) return verifyMongooseID(req, res, next, req.query.tag);
+  if (req.query.tag) return verifyMongooseIDWrapper(req, res, next, req.query.tag);
   else next();
 
 }, controller.getRestaurants);
