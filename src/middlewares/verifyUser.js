@@ -4,7 +4,7 @@ const { User, Role } = require('../models/index');
 const { isValidLength } = require('../utils/isValidLength');
 
 const verifyUserWrapper = (isUpdate = false) => {
-  return (req, res, next) => {
+  return async (req, res, next) => {
 
     /*SI isUpdate = true, EL CHEQUEO DE LOS DATOS SE VAN A HACER SOLO SI ESTÁN EN EL BODY DE LA PETICIÓN*/
 
@@ -49,7 +49,8 @@ const verifyUserWrapper = (isUpdate = false) => {
 
         } else {
 
-          const email = User.findOne({ email: req.body.email });
+          const email = await User.findOne({ email: req.body.email }).exec();
+          console.log(email);
           if (email) {
             errors.email = 'Email is already in use';
           };
