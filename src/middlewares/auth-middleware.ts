@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt = require("jsonwebtoken");
 import { default as ApiError } from "../errors/api-error";
 
-const auth = async (
+const authMiddleware = async (
   req: Request & { headers: { authorization: string } },
   res: Response,
   next: NextFunction
@@ -34,4 +34,4 @@ const auth = async (
 };
 
 
-module.exports = auth;
+module.exports = authMiddleware;
