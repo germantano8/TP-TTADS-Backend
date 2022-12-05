@@ -1,37 +1,10 @@
-import { Request, Response, NextFunction } from "express";
+const { auth } = require("express-oauth2-jwt-bearer");
 
-import jwt = require("jsonwebtoken");
-import { default as ApiError } from "../errors/api-error";
+require("dotenv").config();
 
-const authMiddleware = async (
-  req: Request & { headers: { authorization: string } },
-  res: Response,
-  next: NextFunction
-) => {
-
-
-  try {
-
-    const header = req.headers.authorization;
-    if (!header) throw new ApiError(401, "Authorization header missing");
-
-    const token = header.split(" ")[1];
-    if (!token) throw new ApiError(401, "Token is required for auth");
-
-    const key = process.env.TOKEN_KEY || "";
-
-    const decoded = jwt.verify(token, key);
-    req.user = decoded;
-    next();
-
-  }
-
-
-  catch (err) {
-    next(new ApiError(401, err.message));
-  };
-
-};
-
+const authMiddleware = auth({
+  audience: process.env.AUTH0_IDENTIFIER,
+  issuerBaseURL: process.env.AUTH0_ISSUERBASEURL,
+});
 
 module.exports = authMiddleware;
