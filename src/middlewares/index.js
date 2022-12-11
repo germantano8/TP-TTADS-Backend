@@ -1,8 +1,8 @@
-const verifyMongooseID = require("./verifyMongooseID");
+const { verifyMongooseID, verifyMongooseIDWrapper } = require("./verifyMongooseID");
 const verifyTag = require("./verifyTag");
-const verifyUser = require("./verifyUser");
+const { verifyUserWrapper } = require("./verifyUser");
 const verifyCategory = require("./verifyCategory");
-const verifyMeal = require("./verifyMeal");
+const verifyMealWrapper = require("./verifyMeal");
 const verifyLocation = require("./verifyLocation");
 const verifyRestaurant = require('./verifyRestaurant');
 const verifyRestaurantTags = require("./verifyRestaurantTags");
@@ -11,10 +11,11 @@ const auth = require("./auth-middleware");
 
 module.exports = {
   verifyMongooseID,
+  verifyMongooseIDWrapper,
   verifyTag,
-  verifyUser,
+  verifyUserWrapper,
   verifyCategory,
-  verifyMeal,
+  verifyMealWrapper,
   verifyLocation,
   verifyRestaurant,
   verifyRestaurantTags,
