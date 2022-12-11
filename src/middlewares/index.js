@@ -7,7 +7,7 @@ const verifyLocation = require("./verifyLocation");
 const verifyRestaurant = require('./verifyRestaurant');
 const verifyRestaurantTags = require("./verifyRestaurantTags");
 const verifyOrder = require("./verifyOrder");
-const auth = require("./auth-middleware");
+const authMiddleware = require("./auth-middleware");
 
 module.exports = {
   verifyMongooseID,
@@ -20,5 +20,5 @@ module.exports = {
   verifyRestaurant,
   verifyRestaurantTags,
   verifyOrder,
-  auth,
+  authMiddleware,
 };
