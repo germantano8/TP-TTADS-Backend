@@ -1,12 +1,13 @@
 import { App } from "./app";
 import middlewares from "./middlewares/middlewares";
-import routes = require("./routes/index");
+import {router} from "./routes/index";
+import * as dotenv from 'dotenv';
 
-require("dotenv").config();
+dotenv.config();
 
 const PORT = 3700;
 
-const app = new App(PORT, middlewares, [routes]);
+const app = new App(PORT, middlewares, [router]);
 
-app.mongoDB(process.env.CONN_STRING);
-app.listen();
+
+export {app}

@@ -1,10 +1,16 @@
-const { auth } = require("express-oauth2-jwt-bearer");
+import {auth} from 'express-oauth2-jwt-bearer';
+import * as dotenv from 'dotenv';
 
-require("dotenv").config();
+dotenv.config()
 
-const authMiddleware = auth({
+/*const authMiddleware = auth({
   audience: process.env.AUTH0_IDENTIFIER,
   issuerBaseURL: process.env.AUTH0_ISSUERBASEURL,
-});
 
-module.exports = authMiddleware;
+});*/
+
+const authMiddleware = (req,res,next) => {
+  next()
+}
+
+export{authMiddleware};
