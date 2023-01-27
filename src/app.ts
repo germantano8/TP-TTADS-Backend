@@ -1,6 +1,6 @@
 import { Application } from "express";
-import express = require("express");
-import mongoose = require("mongoose");
+import * as express from "express";
+import * as mongoose from "mongoose";
 import handleError from "./middlewares/errors.middleware";
 
 export class App {

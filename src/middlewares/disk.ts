@@ -1,4 +1,4 @@
-import multer = require("multer");
+import * as multer from "multer";
 import { mkdirSync } from "fs";
 import { Request } from "express";
 
@@ -44,4 +44,4 @@ const uploads = multer({
   },
 });
 
-module.exports = uploads;
+export {uploads};

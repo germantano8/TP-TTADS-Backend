@@ -1,6 +1,6 @@
 import { Response, Request, NextFunction } from "express";
-import bodyParser = require("body-parser");
-import cors = require("cors");
+import * as bodyParser from "body-parser";
+import * as cors from "cors";
 
 export default [
   bodyParser.json(),
